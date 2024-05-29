@@ -4,7 +4,7 @@
     <div id="top"></div>
     <section id="section-hero" aria-label="section" data-bgimage="url({{asset('')}}) bottom">
         <div class="container">
-            <div class="row align-items-center">   
+            <div class="row align-items-center">
                 <div class="col-md-6">
                     @if(session('link'))
                     <div class="alert alert-success download-link">
@@ -16,63 +16,57 @@
                             <p>{{ session('success') }}</p>
                         </div>
                     @endif
-                   <form class="form-container" action="{{ route('start_send') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div id="uploadArea" class="upload-area">
-                        <!-- Header -->
-                        <div class="upload-area__header">
-                            <h1 class="upload-area__title">Upload your file</h1>
-                            <p class="upload-area__paragraph">
-                                File should be an image
-                                <strong class="upload-area__tooltip">
-                                    Like
-                                    <span class="upload-area__tooltip-data"></span> <!-- Data Will be Comes From Js -->
-                                </strong>
-                            </p>
-                        </div>
-                        <!-- End Header -->
-
-                        <!-- Drop Zoon -->
-                        <div id="dropZoon" class="upload-area__drop-zoon drop-zoon">
-                            <span class="drop-zoon__icon">
-                                <i class='bx bxs-file-image'></i>
-                            </span>
-                            <p class="drop-zoon__paragraph">Drop your file here or Click to browse</p>
-                            <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
-                            <img src="" alt="Preview Image" id="previewImage" class="drop-zoon__preview-image" draggable="false">
-                            <input type="file" id="fileInput" class="drop-zoon__file-input" accept="image/*" name="upload">
-                        </div>
-                        <!-- End Drop Zoon -->
-
-                        <!-- File Details -->
-                        <div id="fileDetails" class="upload-area__file-details file-details">
-                            <h3 class="file-details__title">Uploaded File</h3>
-
-                            <div id="uploadedFile" class="uploaded-file">
-                                <div class="uploaded-file__icon-container">
-                                    <i class='bx bxs-file-blank uploaded-file__icon'></i>
-                                    <span class="uploaded-file__icon-text"></span> <!-- Data Will be Comes From Js -->
-                                </div>
-
-                                <div id="uploadedFileInfo" class="uploaded-file__info">
-                                    <span class="uploaded-file__name">Project 1</span>
-                                    <span class="uploaded-file__counter">0%</span>
-                                </div>
+                    <form class="form-container" action="{{ route('start_send_for_user') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div id="uploadArea" class="upload-area">
+                            <!-- Header -->
+                            <div class="upload-area__header">
+                                <h1 class="upload-area__title">Upload your files</h1>
+                                <p class="upload-area__paragraph">
+                                    Files should be images or any file type.
+                                    <strong class="upload-area__tooltip">
+                                        Like
+                                        <span class="upload-area__tooltip-data"></span> <!-- Data Will be Comes From Js -->
+                                    </strong>
+                                </p>
                             </div>
+                            <!-- End Header -->
+                    
+                            <!-- Drop Zone -->
+                            <div id="dropZoon" class="upload-area__drop-zoon drop-zoon">
+                                <span class="drop-zoon__icon">
+                                    <i class='bx bxs-file-image'></i>
+                                </span>
+                                <p class="drop-zoon__paragraph">Drop your files here or Click to browse</p>
+                                <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
+                                <div id="previewImages" class="drop-zoon__preview-images"></div>
+                                <input type="file" id="fileInput" class="drop-zoon__file-input" accept="image/*, .zip, .pdf, .doc, .docx" name="upload[]" multiple>
+                            </div>
+                            <!-- End Drop Zone -->
+                    
+                            <!-- File Details -->
+                            <div id="fileDetails" class="upload-area__file-details file-details">
+                                <h3 class="file-details__title">Uploaded Files</h3>
+                                <div id="uploadedFiles" class="uploaded-files"></div>
+                            </div>
+                            <!-- End File Details -->
+                    
+                            <!-- Additional Input -->
+                            <div class="upload-area__additional-input">
+                                <label for="userEmail" class="additional-input__label">Your Email:</label>
+                                <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" required>
+                            </div>
+                            <!-- End Additional Input -->
+                    
+                            <!-- Submit Button -->
+                            <div class="upload-area__footer">
+                                <button type="submit" class="upload-button">Send</button>
+                            </div>
+                            <!-- End Submit Button -->
                         </div>
-                        <!-- End File Details -->
-
-                        <!-- Submit Button -->
-                        <div class="upload-area__footer">
-                            <button type="submit" class="upload-button">Send</button>
-                        </div>
-                        <!-- End Submit Button -->
-                    </div>
-                </form>
+                    </form>
                       <!-- End Upload Area -->
-                
-                   
-                
+        
                     @if(session('error'))
                         <div class="error-message">
                             <p>{{ session('error') }}</p>
@@ -80,8 +74,8 @@
                     @endif
                     <div class="spacer-double"></div>
                 </div>
-                <div class="col-md-6 xs-hide">
-                    <img src="{{asset('asset/images/misc/se.png')}}" class="lazy img-fluid anim-up-down" alt="" />
+                <div class="col-md-6">
+                    <img src="{{ asset('asset/images/misc/se.png') }}" class="img-fluid anim-up-down" alt="" />
                 </div>
             </div>
         </div>
@@ -251,10 +245,6 @@
 </div>
 <!-- content close -->
 <script>
-// Design By
-// - https://dribbble.com/shots/13992184-File-Uploader-Drag-Drop
-
-// Select Upload-Area
 const uploadArea = document.querySelector('#uploadArea');
 
 // Select Drop-Zoon Area
@@ -266,26 +256,14 @@ const loadingText = document.querySelector('#loadingText');
 // Select File Input 
 const fileInput = document.querySelector('#fileInput');
 
-// Select Preview Image
-const previewImage = document.querySelector('#previewImage');
+// Select Preview Images Container
+const previewImages = document.querySelector('#previewImages');
 
 // File-Details Area
 const fileDetails = document.querySelector('#fileDetails');
 
-// Uploaded File
-const uploadedFile = document.querySelector('#uploadedFile');
-
-// Uploaded File Info
-const uploadedFileInfo = document.querySelector('#uploadedFileInfo');
-
-// Uploaded File Name
-const uploadedFileName = document.querySelector('.uploaded-file__name');
-
-// Uploaded File Icon
-const uploadedFileIconText = document.querySelector('.uploaded-file__icon-text');
-
-// Uploaded File Counter
-const uploadedFileCounter = document.querySelector('.uploaded-file__counter');
+// Uploaded Files Container
+const uploadedFiles = document.querySelector('#uploadedFiles');
 
 // ToolTip Data
 const toolTipData = document.querySelector('.upload-area__tooltip-data');
@@ -298,143 +276,124 @@ toolTipData.innerHTML = [...imagesTypes].join(', .');
 
 // When (drop-zoon) has (dragover) Event 
 dropZoon.addEventListener('dragover', function (event) {
-  // Prevent Default Behavior 
   event.preventDefault();
-
-  // Add Class (drop-zoon--over) On (drop-zoon)
   dropZoon.classList.add('drop-zoon--over');
 });
 
 // When (drop-zoon) has (dragleave) Event 
 dropZoon.addEventListener('dragleave', function (event) {
-  // Remove Class (drop-zoon--over) from (drop-zoon)
   dropZoon.classList.remove('drop-zoon--over');
 });
 
 // When (drop-zoon) has (drop) Event 
 dropZoon.addEventListener('drop', function (event) {
-  // Prevent Default Behavior 
   event.preventDefault();
-
-  // Remove Class (drop-zoon--over) from (drop-zoon)
   dropZoon.classList.remove('drop-zoon--over');
-
-  // Select The Dropped File
-  const file = event.dataTransfer.files[0];
-
-  // Call Function uploadFile(), And Send To Her The Dropped File :)
-  uploadFile(file);
+  handleFiles(event.dataTransfer.files);
 });
 
 // When (drop-zoon) has (click) Event 
 dropZoon.addEventListener('click', function (event) {
-  // Click The (fileInput)
   fileInput.click();
 });
 
 // When (fileInput) has (change) Event 
 fileInput.addEventListener('change', function (event) {
-  // Select The Chosen File
-  const file = event.target.files[0];
-
-  // Call Function uploadFile(), And Send To Her The Chosen File :)
-  uploadFile(file);
+  handleFiles(event.target.files);
 });
 
-// Upload File Function
-function uploadFile(file) {
-  // FileReader()
-  const fileReader = new FileReader();
-  // File Size 
-  const fileSize = file.size;
+// Handle Files Function
+function handleFiles(files) {
+  previewImages.innerHTML = "";
+  uploadedFiles.innerHTML = "";
 
-  // If File Is Passed from the (File Validate) Function
-  if (fileValidate(fileSize)) {
-    // Add Class (drop-zoon--Uploaded) on (drop-zoon)
-    dropZoon.classList.add('drop-zoon--Uploaded');
+  for (const file of files) {
+    const fileReader = new FileReader();
+    const fileSize = file.size;
 
-    // Show Loading-text
-    loadingText.style.display = "block";
-    // Hide Preview Image
-    previewImage.style.display = 'none';
+    if (fileValidate(fileSize)) {
+      dropZoon.classList.add('drop-zoon--Uploaded');
+      loadingText.style.display = "block";
 
-    // Remove Class (uploaded-file--open) From (uploadedFile)
-    uploadedFile.classList.remove('uploaded-file--open');
-    // Remove Class (uploaded-file__info--active) from (uploadedFileInfo)
-    uploadedFileInfo.classList.remove('uploaded-file__info--active');
+      fileReader.addEventListener('load', function (e) {
+        // Create a container for the preview
+        const previewContainer = document.createElement("div");
+        previewContainer.className = "preview-container";
 
-    // After File Reader Loaded 
-    fileReader.addEventListener('load', function () {
-      // After Half Second 
-      setTimeout(function () {
-        // Add Class (upload-area--open) On (uploadArea)
-        uploadArea.classList.add('upload-area--open');
+        // Create the preview image element
+        const previewImage = document.createElement("img");
+        previewImage.src = e.target.result;
+        previewImage.className = "drop-zoon__preview-image";
+        previewContainer.appendChild(previewImage);
 
-        // Hide Loading-text (please-wait) Element
-        loadingText.style.display = "none";
-        // Show Preview Image
-        previewImage.style.display = 'block';
+        // Append the preview container to the previewImages element
+        previewImages.appendChild(previewContainer);
 
-        // Add Class (file-details--open) On (fileDetails)
-        fileDetails.classList.add('file-details--open');
-        // Add Class (uploaded-file--open) On (uploadedFile)
-        uploadedFile.classList.add('uploaded-file--open');
-        // Add Class (uploaded-file__info--active) On (uploadedFileInfo)
-        uploadedFileInfo.classList.add('uploaded-file__info--active');
-      }, 500); // 0.5s
+        // Create the uploaded file details
+        const uploadedFile = document.createElement("div");
+        uploadedFile.className = "uploaded-file";
 
-      // Add The (fileReader) Result Inside (previewImage) Source
-      previewImage.setAttribute('src', fileReader.result);
+        const iconContainer = document.createElement("div");
+        iconContainer.className = "uploaded-file__icon-container";
+        const icon = document.createElement("i");
+        icon.className = "bx bxs-file-blank uploaded-file__icon";
+        const iconText = document.createElement("span");
+        iconText.className = "uploaded-file__icon-text";
+        iconText.textContent = file.name;
+        iconContainer.appendChild(icon);
+        iconContainer.appendChild(iconText);
 
-      // Add File Name Inside Uploaded File Name
-      uploadedFileName.innerHTML = file.name;
+        const fileInfo = document.createElement("div");
+        fileInfo.className = "uploaded-file__info";
+        const fileName = document.createElement("span");
+        fileName.className = "uploaded-file__name";
+        fileName.textContent = file.name;
+        const fileCounter = document.createElement("span");
+        fileCounter.className = "uploaded-file__counter";
+        fileCounter.textContent = "0%";
+        fileInfo.appendChild(fileName);
+        fileInfo.appendChild(fileCounter);
 
-      // Call Function progressMove();
-      progressMove();
-    });
+        uploadedFile.appendChild(iconContainer);
+        uploadedFile.appendChild(fileInfo);
 
-    // Read (file) As Data Url 
-    fileReader.readAsDataURL(file);
-  } else { // Else
+        uploadedFiles.appendChild(uploadedFile);
 
-    this; // (this) Represent The fileValidate(fileSize) Function
+        progressMove(fileCounter);
+      });
 
-  };
-};
+      fileReader.readAsDataURL(file);
+    } else {
+      alert('Please Your File Should be 1 Gigabyte or Less');
+    }
+  }
+
+  setTimeout(function () {
+    loadingText.style.display = "none";
+    previewImages.style.display = 'block';
+    fileDetails.classList.add('file-details--open');
+  }, 500);
+}
 
 // Progress Counter Increase Function
-function progressMove() {
-  // Counter Start
+function progressMove(fileCounter) {
   let counter = 0;
 
-  // After 600ms 
   setTimeout(() => {
-    // Every 100ms
     let counterIncrease = setInterval(() => {
-      // If (counter) is equal to 100 
       if (counter === 100) {
-        // Stop (Counter Increase)
         clearInterval(counterIncrease);
-      } else { // Else
-        // plus 10 on counter
+      } else {
         counter = counter + 10;
-        // add (counter) value inside (uploadedFileCounter)
-        uploadedFileCounter.innerHTML = `${counter}%`
+        fileCounter.innerHTML = `${counter}%`
       }
     }, 100);
   }, 600);
-};
+}
 
 // Simple File Validate Function
 function fileValidate(fileSize) {
-  // Check if File Size Is 1GB or Less
-  if (fileSize <= 1073741824) { // 1GB :)
-    return true;
-  } else { // Else File Size
-    alert('Please Your File Should be 1 Gigabyte or Less');
-    return false;
-  }
+  return fileSize <= 1073741824;
 }
-
 </script>
 @endsection

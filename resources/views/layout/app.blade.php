@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-    <title>Hostco Web Hosting</title>
+    <title>Hostco Transfer System</title>
     <link rel="icon" href="{{asset('asset/images/icon.png')}}" type="image/gif" sizes="16x16">
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1.0" name="viewport" >
-    <meta content="Hostco - Modern Web Hosting & WHMCS Template" name="description" >
+    <meta content="Hostco - Transfer System" name="description" >
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     <meta content="" name="keywords" >
     <meta content="" name="author" >
+    <!-- Other meta tags and headers -->
+    <meta property="og:title" content="Transfer">
+    <meta property="og:description" content="At Hostco, we make transferring images and files easy, fast, and free. Whether you need to share large files with colleagues, friends, or clients, our service is designed to handle it all with no restrictions on file size.">
+    <meta property="og:image" content="https://transfer.smartdevelop.am/asset/images/misc/se.png">
+    <meta property="og:url" content="transfer.smartdevelop.am">
+    <meta property="og:type" content="website App">
     <!-- CSS Files
     ================================================== -->
     @include('layout.style')
@@ -40,7 +47,7 @@
     ================================================== -->
     @include('layout.script')
     <!-- COOKIES PLUGIN  -->
-    <script>
+    {{-- <script>
       $(document).ready(function() {
         $.cookit({
           messageColor: '#fff',
@@ -52,7 +59,39 @@
           buttonText: "I accept",
         });
       });
-    </script>
+    </script> --}}
+    @if ($errors->any())
+  @foreach ($errors->all() as $error)
+  <script>
+      iziToast.error({
+      title: '',
+      position: 'topRight',
+      message: '<span">{{ $error }}</span>',
+  });
+  </script>
+  @endforeach
+
+  @endif
+
+  @if (session()->get('error'))
+  <script>
+      iziToast.error({
+      title: '',
+      position: 'topRight',
+      message: '<span class="error-text">{{ session()->get('error') }}</span>',
+  });
+  </script>
+  @endif
+
+  @if (session()->get('succes'))
+  <script>
+      iziToast.success({
+      title: '',
+      position: 'topRight',
+      message: '<span class="success-text">{{ session()->get('succes') }}</span>',
+  });
+  </script>
+  @endif
 </body>
 
 

@@ -20,7 +20,16 @@
     </section>
     <!-- section close -->
 
-
+    @if(session('error'))
+    <div class="error-message">
+        <p>{{ session('error') }}</p>
+    </div>
+    @endif
+    @if(session('success'))
+    <div class="alert alert-success success-message">
+        <p>{{ session('success') }}</p>
+    </div>
+    @endif
     <section aria-label="section">
         <div class="container">
             <div class="row">
@@ -30,8 +39,8 @@
 
                     <div class="spacer-10"></div>
 
-                    <form name="contactForm" id='contact_form' class="form-border" method="post" action='blank.php'>
-
+                    <form name="contactForm" id='contact_form' class="form-border" method="post" action='{{route('register_submit')}}'>
+                    @csrf
                         <div class="row">
 
                             <div class="col-md-6">
@@ -50,13 +59,6 @@
 
                             <div class="col-md-6">
                                 <div class="field-set">
-                                    <label>Choose a Username:</label>
-                                    <input type='text' name='username' id='username' class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="field-set">
                                     <label>Phone:</label>
                                     <input type='text' name='phone' id='phone' class="form-control">
                                 </div>
@@ -65,14 +67,7 @@
                             <div class="col-md-6">
                                 <div class="field-set">
                                     <label>Password:</label>
-                                    <input type='text' name='password' id='password' class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="field-set">
-                                    <label>Re-enter Password:</label>
-                                    <input type='text' name='re-password' id='re-password' class="form-control">
+                                    <input type='password' name='password' id='password' class="form-control">
                                 </div>
                             </div>
 
