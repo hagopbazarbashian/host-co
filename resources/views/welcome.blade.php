@@ -4,6 +4,10 @@
     <div id="top"></div>
     <section id="section-hero" aria-label="section" data-bgimage="url({{asset('')}}) bottom">
         <div class="container">
+              <div class="alert alert-success" role="alert">
+                If you log in, you will have full access to all features. 
+                <a href="{{ route('free_trial') }}" class="alert-link">Click here to log in</a>.
+            </div>
             <div class="row align-items-center">   
                 <div class="col-md-6">
                     @if(session('link'))
@@ -31,7 +35,7 @@
                             </p>
                         </div>
                         <!-- End Header -->
-
+    
                         <!-- Drop Zoon -->
                         <div id="dropZoon" class="upload-area__drop-zoon drop-zoon">
                             <span class="drop-zoon__icon">
@@ -43,17 +47,17 @@
                             <input type="file" id="fileInput" class="drop-zoon__file-input" accept="image/*" name="upload">
                         </div>
                         <!-- End Drop Zoon -->
-
+    
                         <!-- File Details -->
                         <div id="fileDetails" class="upload-area__file-details file-details">
                             <h3 class="file-details__title">Uploaded File</h3>
-
+    
                             <div id="uploadedFile" class="uploaded-file">
                                 <div class="uploaded-file__icon-container">
                                     <i class='bx bxs-file-blank uploaded-file__icon'></i>
                                     <span class="uploaded-file__icon-text"></span> <!-- Data Will be Comes From Js -->
                                 </div>
-
+    
                                 <div id="uploadedFileInfo" class="uploaded-file__info">
                                     <span class="uploaded-file__name">Project 1</span>
                                     <span class="uploaded-file__counter">0%</span>
@@ -61,7 +65,7 @@
                             </div>
                         </div>
                         <!-- End File Details -->
-
+    
                         <!-- Submit Button -->
                         <div class="upload-area__footer">
                             <button type="submit" class="upload-button">Send</button>
@@ -70,9 +74,6 @@
                     </div>
                 </form>
                       <!-- End Upload Area -->
-                
-                   
-                
                     @if(session('error'))
                         <div class="error-message">
                             <p>{{ session('error') }}</p>
@@ -80,7 +81,8 @@
                     @endif
                     <div class="spacer-double"></div>
                 </div>
-                <div class="col-md-6 xs-hide">
+                <!-- Removed xs-hide class -->
+                <div class="col-md-6">
                     <img src="{{asset('asset/images/misc/se.png')}}" class="lazy img-fluid anim-up-down" alt="" />
                 </div>
             </div>

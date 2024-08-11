@@ -94,8 +94,8 @@
                             </a>
                         </div>
                         <ul class="menu-simple">
-                            <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
-                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                            <li><a href="https://www.termsfeed.com/live/8ecf05ee-5d99-4893-a9b8-2b2ffc244205">Terms &amp; Conditions</a></li>
+                            <li><a href="https://www.termsfeed.com/live/e887c13a-062f-4999-bab1-df6e2cf1bc68">Privacy Policy</a></li>
                         </ul>
                     </div>
                 </div>

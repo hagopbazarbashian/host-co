@@ -12,7 +12,7 @@
     <!-- Other meta tags and headers -->
     <meta property="og:title" content="Transfer">
     <meta property="og:description" content="At Hostco, we make transferring images and files easy, fast, and free. Whether you need to share large files with colleagues, friends, or clients, our service is designed to handle it all with no restrictions on file size.">
-    <meta property="og:image" content="https://transfer.smartdevelop.am/asset/images/misc/se.png">
+    <meta property="og:image" content="https://transfer.smartdevelop.am/asset/images/B4664469-1F94-4AF2-875A-D1041BB4553C.jpg">
     <meta property="og:url" content="transfer.smartdevelop.am">
     <meta property="og:type" content="website App">
     <!-- CSS Files

@@ -30,9 +30,9 @@
                                 </form>
                                 <div class="title-line">Or&nbsp;sign&nbsp;up&nbsp;with</div>
                                 <div class="row g-2" style="display:flex;justify-content: center;">
-                                    {{-- <div class="col-lg-6">
-                                        <a class="btn-sc btn-fullwidth mb10" href="{{route('register')}}"><img src="{{asset('asset/images/svg/google_icon.svg')}}" alt="">Google</a>
-                                    </div> --}}
+                                    <div class="col-lg-6">
+                                        <a class="btn-sc btn-fullwidth mb10" href="{{ route('login.google') }}"><img src="{{asset('asset/images/svg/google_icon.svg')}}" alt="">Google</a>
+                                    </div>
                                     <div class="col-lg-6">
                                         <a class="btn-sc btn-fullwidth mb10" href="{{route('register')}}">Register Now</a>
                                     </div>

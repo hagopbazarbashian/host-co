@@ -11,60 +11,69 @@ use Carbon\Carbon;
 
 class transferInfoforuserloginController extends Controller
 {
-    public function storeuser(Request $request)
-    {
+   public function storeuser(Request $request)
+{
+    // Check if the request has files
+    if ($request->hasFile('upload')) {
+        $zip = new ZipArchive;
+        $zipFileName = 'uploads_' . uniqid() . '.zip';
+        $zipFilePath = storage_path('app/public/uploads/' . $zipFileName);
 
-        $request->validate([
-           'email'=>'required | email'
-        ]);
-        
-        // Check if the request has files
-        if ($request->hasFile('upload')) {
-            $zip = new ZipArchive;
-            $zipFileName = 'uploads_' . uniqid() . '.zip';
-            $zipFilePath = storage_path('app/public/uploads/' . $zipFileName);
-
-            if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-                foreach ($request->file('upload') as $file) {
-                    $fileName = $file->getClientOriginalName();
-                    $filePath = $file->store('uploads', 'public');
-                    $zip->addFile(storage_path('app/public/' . $filePath), $fileName);
-
-                    // Generate a unique link for each file
-                    $uniqueLink = uniqid('file_', true);
-
-                    // Store the information in the database
-                    $data = [
-                        'user_session' => session()->getId(),
-                        'file_path' => $filePath,
-                        'delete_time' => now()->addHour(), // Set to delete after 1 hour
-                        'uniq_link' => $uniqueLink,
-                    ];
-
-                    // Save the data to the database (replace with your actual model)
-                    transfer::create($data);
-                }
-                $zip->close();
-
-                // Send an email with the link to the zip file
-                $userEmail = $request->input('email');
-                $zipDownloadLink = asset('storage/uploads/' . $zipFileName);
-
-                Mail::send('emails.uploaded', ['downloadLink' => $zipDownloadLink], function($message) use ($userEmail) {
-                    $message->to($userEmail)
-                    ->subject('Your uploaded files');
-                });
-
-                // Return with a success message
-                return redirect()->back()->with('success', 'Files uploaded and email sent successfully.');
-            } else {
-                return redirect()->back()->with('error', 'Failed to create zip file.');
-            }
-        } else {
-            return redirect()->back()->with('error', 'No files uploaded.');
+        // Create directory if not exists
+        if (!file_exists(storage_path('app/public/uploads'))) {
+            mkdir(storage_path('app/public/uploads'), 0755, true);
         }
-    }
 
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            foreach ($request->file('upload') as $file) {
+                $fileName = $file->getClientOriginalName();
+                $filePath = $file->store('uploads', 'public');
+                $zip->addFile(storage_path('app/public/' . $filePath), $fileName);
+            }
+            $zip->close();
+
+            // Generate a unique link for the zip file
+            $uniqueLink = uniqid('file_', true);
+
+            // Store the information in the database
+            $data = [
+                'user_session' => session()->getId(),
+                'file_path' => 'uploads/' . $zipFileName,
+                'delete_time' => now()->addHour(), // Set to delete after 1 hour
+                'uniq_link' => $uniqueLink,
+            ];
+
+            // Save the data to the database (replace with your actual model)
+            Transfer::create($data);
+
+            // Generate the download link for the zip file
+            $zipDownloadLink = asset('storage/uploads/' . $zipFileName);
+
+            // Send an email with the link to the zip file if email is provided
+            $userEmail = $request->input('email');
+            if ($userEmail) {
+                try {
+                    Mail::send('emails.uploaded', ['downloadLink' => $zipDownloadLink], function($message) use ($userEmail) {
+                        $message->to($userEmail)
+                                ->subject('Your uploaded files');
+                    });
+                } catch (\Exception $e) {
+                    // Handle email sending failure
+                    return redirect()->back()->with('error', 'File uploaded, but failed to send email.');
+                }
+            }
+
+            // Return with a success message and the unique link to the zip file
+            return redirect()->back()->with('success', 'File or image uploaded successfully.')
+                                 ->with('link', $zipDownloadLink);
+        } else {
+            return redirect()->back()->with('error', 'Failed to create zip file.');
+        }
+    } else {
+        return redirect()->back()->with('error', 'No files uploaded.');
+    }
+}
+  
     public function downloaduser($uniqueLink)
     {
         // Retrieve the file record from the database

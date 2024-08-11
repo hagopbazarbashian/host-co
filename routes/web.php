@@ -7,6 +7,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\transferInfoController;
 use App\Http\Controllers\User\HomeControllerr;
 use App\Http\Controllers\transferInfoforuserloginController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\SocialAuthController;
 use App\Jobs\DeleteOldRecords;
 
 /*
@@ -24,10 +26,14 @@ Route::get('/',[HomeController::class , 'index'])->name('home');
 // Login page 
 Route::get('free-trial',[LoginController::class , 'index'])->name('free_trial');
 Route::post('login-submit',[LoginController::class , 'loginsumbit'])->name('login_submit');
+
+Route::get('login/google', [SocialAuthController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('callback/google', [SocialAuthController::class, 'handleGoogleCallback']);
 // Register
 Route::get('register',[RegisterController::class , 'index'])->name('register');
 Route::post('register-submit',[RegisterController::class , 'registersumbit'])->name('register_submit');
 
+Route::post('/send-contact', [ContactController::class, 'sendContact'])->name('send_contact');
 
 //Start Tranfer
 Route::post('start-send' , [transferInfoController::class , 'store'])->name('start_send');
@@ -57,4 +63,10 @@ Route::middleware(['web:web'])->group(function () {
 Route::get('/test-job', function () {
     DeleteOldRecords::dispatch();
     return 'Job dispatched!';
+});
+
+Route::get('/clear-cache', function() {
+    // Artisan::call('cache:clear');
+    Artisan::call('storage:link');
+    return "Cache is cleared";
 });
