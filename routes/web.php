@@ -60,6 +60,14 @@ Route::middleware(['web:web'])->group(function () {
     // });
 });
 
+Route::get('/Privacy-Policy', function () {
+    return  view('Privacy-Policy'); 
+});
+
+Route::get('/Terms-Conditions', function () {
+    return  view('Terms-Conditions'); 
+});
+
 Route::get('/test-job', function () {
     DeleteOldRecords::dispatch();
     return 'Job dispatched!';
