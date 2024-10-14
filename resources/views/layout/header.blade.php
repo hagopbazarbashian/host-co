@@ -21,18 +21,29 @@
                     <div class="de-flex-col">
                         <div class="de-flex-col">
                             <!-- logo begin -->
+                            @guest
                             <div id="logo">
                                 <a href="{{route('home')}}">
                                     <img class="logo-main" src="{{asset('asset/images/logo.png')}}" alt="" >
                                     <img class="logo-mobile" src="{{asset('asset/images/logo-mobile.png')}}" alt="" >
                                 </a>
                             </div>
+                            @endguest   
+                            @auth
+                            <div id="logo">
+                                <a href="{{route('home')}}">
+                                    <img class="logo-main" src="{{asset('asset/images/logo.png')}}" alt="" >
+                                    <img class="logo-mobile" src="{{asset('asset/images/logo-mobile.png')}}" alt="" >
+                                </a>
+                            </div>
+                            @endauth
+                            
                             <!-- logo close -->
                         </div>
-                    </div>
-                    <div class="de-flex-col header-col-mid">
+                    </div>  
+                    <div class="de-flex-col header-col-mid">  
                         <ul id="mainmenu">
-                            @guest
+                            @guest  
                                 <li><a class="menu-item" href="{{route('free_trial')}}">Transfer</a></li>
                             @endguest
 
@@ -43,8 +54,12 @@
                             {{-- <li><a class="menu-item" href="website-builder.html">Pricing</a></li> --}}
                             <li><a class="menu-item" href="#" id="contactUsLink">Contact Us</a></li>
                             <li><a class="menu-item" href="{{route('send_text')}}">send text</a></li>
+                            @guest
+                            <li><a class="menu-item" href="{{route('login')}}"><i class="fas fa-folder-open"></i> Show Your Files</a></li>
+                            @endguest
+                        
                             @auth
-                            <li><a class="menu-item" href="{{ route('send_text') }}"><i class="fas fa-folder-open"></i> Show Your Files</a></li>
+                                <li><a class="menu-item" href="{{ route('show_files', auth()->user()->id) }}"><i class="fas fa-folder-open"></i> Show Your Files</a></li>
                             @endauth
                         </ul>
                     </div>

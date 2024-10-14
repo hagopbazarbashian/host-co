@@ -11,10 +11,11 @@ class transfer extends Model
         'user_session',
         'file_path',
         'delete_time',
-        'uniq_link',
+        'uniq_link',  
         'user_id'
     ];
 
     public $timestamps = true;
 
 }
+  
