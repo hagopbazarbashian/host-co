@@ -250,6 +250,105 @@
             </div>
         </div>
     </section> --}}
+<div id="newsspec-19854-app" class="news-app-promo">
+    <div class="news-app-promo-text">
+        <div class="news-app-promo-text__download">Download App.</div>
+    </div>
+    <div class="news-app-promo__section">
+        <div class="news-app-promo-subsection">
+            <img class="news-app-promo__bbc-logo" src="{{asset('asset/6C8CAC04-BDD7-411D-AADE-6E0323448688-removebg-preview.png')}}" width="106" height="106">
+        </div>
+        <div class="news-app-promo-subsection">
+            <a class="news-app-promo-subsection--link news-app-promo-subsection--playstore" href="{{asset('asset/y1hYiMRmBU8uTChXu8bo.apk')}}" target="_parent">
+                <img style="margin-bottom: 0px;!imporatnt" class="news-app-promo__play-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/google_play_store.svg" width="161" height="auto" border="0">
+            </a>
+            <!--<a class="news-app-promo-subsection--link news-app-promo-subsection--appstore" href="https://itunes.apple.com/us/app/bbc-news/id364147881?mt=8" target="_parent">-->
+            <!--    <img class="news-app-promo__app-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/ios_app_store.svg" width="161" height="auto" border="0">-->
+            <!--</a>-->
+        </div>
+    </div>
+    <div class="news-app-promo__section">
+
+    </div>
+</div>
+<style>
+    .news-app-promo {
+  box-sizing: border-box;
+  background-color: #000;
+  padding: 0.5em;
+  margin-top: 1em;
+}
+
+.news-app-promo__section {
+  display: inline-block;
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.news-app-promo-text {
+  color: #fff;
+  font-family: helvetica;
+  min-width: 277px;
+  border-right: 0.25em solid #fff;
+  border-left: 0.25em solid #fff;
+  padding: 0 1em;
+  width: 35%;
+  margin: 1em auto;
+  display: block;
+}
+
+.news-app-promo-text__tagline {
+  font-size: 1.09em;
+}
+
+.news-app-promo-text__download {
+  font-size: 2.25em;
+  font-weight: 600;
+}
+
+.news-app-promo-buttons {
+  margin: 0 auto;
+  max-width: 35%;
+  display: block;
+}
+
+.news-app-promo-buttons__buttons {
+  display: block;
+}
+
+.news-app-promo-buttons__logo {
+  display: inline-block;
+}
+
+.news-app-promo-subsection {
+  display: inline-block;
+  margin: 0 auto;
+  margin-right: 10px;
+}
+
+.news-app-promo__bbc-logo {
+    display: inline-block;
+    width: 146px;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+.news-app-promo__play-store,
+.news-app-promo__app-store {
+  display: block;
+  width: 161px;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.news-app-promo-subsection--link {
+  text-decoration: none;
+  border: 0;
+}
+</style>
 </div>
 <!-- content close -->
 <script>
@@ -439,4 +538,7 @@ function fileValidate(fileSize) {
 }
 
 </script>
+
+
+
 @endsection

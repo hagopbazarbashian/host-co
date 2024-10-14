@@ -3,19 +3,19 @@
     <div class="container">
        <div class="row g-custom-x" style="display:flex; justify-content:center;">
           <div class="col-lg-4">
-             <img src="{{asset('asset/images/logo.png')}}" alt="" />
+             <img src="{{asset('asset/images/IMG_4004.PNG')}}" style="width: 100%;" alt="" />
              <div class="spacer-20"></div>
              <p>
-                At Hostco, we make transferring images and files easy, fast, and free. Whether you need to share large files with colleagues, friends, or clients, our service is designed to handle it all with no restrictions on file size.
+                At transfer.smartdevelop.am, we make transferring images and files easy, fast, and free. Whether you need to share large files with colleagues, friends, or clients, our service is designed to handle it all with no restrictions on file size.
              </p>
              <div class="spacer-10"></div>
-             <div class="widget">
-                <h5>We Accepted</h5>
-                <img class="img-card-sm" src="{{asset('asset/images/payments-logo/visa.png')}}" alt="" />
-                <img class="img-card-sm" src="{{asset('asset/images/payments-logo/master-card.png')}}" alt="" />
-                <img class="img-card-sm" src="{{asset('asset/images/payments-logo/jcb.png')}}" alt="" />
-                <img class="img-card-sm" src="{{asset('asset/images/payments-logo/paypal.png')}}" alt="" />
-             </div>
+             <!--<div class="widget">-->
+             <!--   <h5>We Accepted</h5>-->
+             <!--   <img class="img-card-sm" src="{{asset('asset/images/payments-logo/visa.png')}}" alt="" />-->
+             <!--   <img class="img-card-sm" src="{{asset('asset/images/payments-logo/master-card.png')}}" alt="" />-->
+             <!--   <img class="img-card-sm" src="{{asset('asset/images/payments-logo/jcb.png')}}" alt="" />-->
+             <!--   <img class="img-card-sm" src="{{asset('asset/images/payments-logo/paypal.png')}}" alt="" />-->
+             <!--</div>-->
           </div>
           
           {{-- <div class="col-lg-4">
@@ -85,12 +85,12 @@
                     <div class="de-flex">
                         <div class="de-flex-col">
                             <a href="https://smartdevelop.am/">
-                                <img src="{{asset('/asset/images/logosmartdevelop.png')}}" alt="Company Logo" class="company-logo" />
+                                <img src="{{asset('asset/Capture.2JPG-removebg-preview.png')}}" alt="Company Logo" class="company-logo" />
                             </a>
                         </div>
                         <div class="de-flex-col">
                             <a href="https://smartdevelop.am/">
-                                Copyright 2023 - Hostco by Smart Develop
+                                Copyright 2023 - transfer.smartdevelop.am by Smart Develop
                             </a>
                         </div>
                         <ul class="menu-simple">

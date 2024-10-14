@@ -17,13 +17,16 @@ class LoginController extends Controller
 
     public function loginsumbit(LoginRequest $request){
 
-        $credential = [
+        $credential = [   
             'email' => $request->email, 
             'password' => $request->password 
         ];
 
         if (Auth::guard('web')->attempt($credential)) {
           $user = Auth::guard('web')->user();  
+          if($user->is_admin == 1){
+            return redirect()->route('admin_panel');
+          }
           return redirect()->route('user_home');
 
         } else {

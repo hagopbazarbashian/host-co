@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\transferInfoController;
 use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController};
+use App\Http\Controllers\Admin\AdminHomePage;
 use App\Http\Controllers\transferInfoforuserloginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SocialAuthController;
@@ -18,7 +19,7 @@ use App\Jobs\DeleteOldRecords;
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| contains the "web" middleware group. Now create something great!  
 |
 */
 // Home Page
@@ -32,7 +33,7 @@ Route::get('callback/google', [SocialAuthController::class, 'handleGoogleCallbac
 // Register
 Route::get('register',[RegisterController::class , 'index'])->name('register');
 Route::post('register-submit',[RegisterController::class , 'registersumbit'])->name('register_submit');
-
+   
 Route::post('/send-contact', [ContactController::class, 'sendContact'])->name('send_contact');
 
 //Start Tranfer
@@ -43,7 +44,6 @@ Route::get('/download/{uniqueLink}', [transferInfoController::class, 'download']
 Route::middleware(['web:web'])->group(function () {
   
     Route::get('user-home' , [HomeControllerr::class , 'index'])->name('user_home');
-
     //Start Tranfer
     Route::post('start-send-user' , [transferInfoforuserloginController::class , 'storeuser'])->name('start_send_for_user');
     Route::get('/download/{uniqueLink}', [transferInfoforuserloginController::class, 'downloaduser'])->name('download.file');
@@ -66,6 +66,9 @@ Route::middleware(['web:web'])->group(function () {
 
     //Show User Files 
     Route::get('show-files/{id}' ,[ShowUserFilesController::class , 'index'])->name('show_files');
+
+    //Admin  Syetem 
+    Route::get('admin-panel' ,[AdminHomePage::class , 'index'])->name('admin_panel');
 });
 
 Route::get('/Privacy-Policy', function () {

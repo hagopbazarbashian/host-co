@@ -3079,8 +3079,8 @@ a.btn-add_to_cart:before {
 a.btn-main,
 a.btn-main:active,
 a.btn-main:focus,
-a.btn-main:visited,
-.btn-main,
+a.btn-main:visited,  
+.btn-main,   
 input[type=button].btn-main,
 a.btn-line,
 #mainmenu li ul.mega a.btn-main{
@@ -3095,7 +3095,7 @@ a.btn-line,
     font-weight: 800;
     text-decoration: none;
     padding: 6px 40px 6px 40px;
-    font-size: 14px;
+    font-size: 13px;
     border: none;
 }
 
@@ -17375,9 +17375,16 @@ img {
   border: 2px solid var(--clr-light-blue);
   border-radius: 24px;
   padding: 2rem 1.875rem 5rem 1.875rem;
-  margin: 0.625rem;
+  margin: 0.625rem;   
   text-align: center;
 }
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 600px) {
+    .upload-area {
+        margin: 43px 0px 0px auto;
+    }
+  }
 
 .upload-area--open { /* Slid Down Animation */
   animation: slidDown 500ms ease-in-out;

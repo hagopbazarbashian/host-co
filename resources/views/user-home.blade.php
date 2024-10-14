@@ -1,291 +1,465 @@
-@extends('layout.app')
-
-@section('main-content')
+@extends('layout.app') @section('main-content')
 <style>
-    .drop-zoon {
-        border: 2px dashed #ccc;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: border-color 0.3s;
-    }
+   .drop-zoon {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+   }
 
-    .drop-zoon--over {
-        border-color: #00f;
-    }
+   .drop-zoon--over {
+      border-color: #00f;
+   }
 
-    .drop-zoon--Uploaded {
-        border-color: #0f0;
-    }
+   .drop-zoon--Uploaded {
+      border-color: #0f0;
+   }
 
-    .drop-zoon__icon {
-        font-size: 48px;
-        color: #ccc;
-    }
+   .drop-zoon__icon {
+      font-size: 48px;
+      color: #ccc;
+   }
 
-    .drop-zoon__paragraph {
-        font-size: 16px;
-        color: #333;
-    }
+   .drop-zoon__paragraph {
+      font-size: 16px;
+      color: #333;
+   }
 
-    .drop-zoon__loading-text {
-        display: none;
-        font-size: 16px;
-        color: #f00;
-    }
+   .drop-zoon__loading-text {
+      display: none;
+      font-size: 16px;
+      color: #f00;
+   }
 
-    .preview-container {
-        display: inline-block;
-        margin: 10px;
-    }
+   .preview-container {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+   }
 
-    .drop-zoon__preview-image {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-    }
+   .drop-zoon__preview-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+   }
 
-    .uploaded-file {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-    }
+   .file-name-text {
+      font-size: 14px;
+      color: #333;
+      margin-top: 5px;
+   }
 
-    .uploaded-file__icon-container {
-        display: flex;
-        align-items: center;
-    }
+   .uploaded-file {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+   }
 
-    .uploaded-file__icon {
-        font-size: 24px;
-        margin-right: 10px;
-    }
+   .uploaded-file__icon-container {
+      display: flex;
+      align-items: center;
+   }
 
-    .uploaded-file__icon-text {
-        font-size: 16px;
-    }
+   .uploaded-file__icon {
+      font-size: 24px;
+      margin-right: 10px;
+   }
 
-    .uploaded-file__info {
-        display: flex;
-        flex-direction: column;
-    }
+   .uploaded-file__icon-text {
+      font-size: 16px;
+   }
 
-    .uploaded-file__name {
-        font-size: 16px;
-    }
+   .uploaded-file__info {
+      display: flex;
+      flex-direction: column;
+   }
 
-    .uploaded-file__counter {
-        font-size: 12px;
-        color: #999;
-    }
+   .uploaded-file__name {
+      font-size: 16px;
+   }
+
+   .uploaded-file__counter {
+      font-size: 12px;
+      color: #999;
+   }
+
+   /* Loading spinner styles */
+   .loading-spinner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+      0% {
+         transform: rotate(0deg);
+      }
+      100% {
+         transform: rotate(360deg);
+      }
+   }
 </style>
-<div class="no-bottom no-top" id="content">
-    <div id="top"></div>
-    <section id="section-hero" aria-label="section" data-bgimage="url({{asset('images/bg.jpg')}}) bottom">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    @if(session('link'))
-                    <div class="alert alert-success download-link">
-                        <p>File uploaded successfully. Share this link to download: <a href="{{ session('link') }}">{{ session('link') }}</a></p>
-                    </div>
-                    @endif
-                    @if(session('success'))
-                        <div class="alert alert-success success-message">
-                            <p>{{ session('success') }}</p>
-                        </div>
-                    @endif
-                    <form class="form-container" action="{{ route('start_send_for_user') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div id="uploadArea" class="upload-area">
-                            <!-- Header -->
-                            <div class="upload-area__header">
-                                <h1 class="upload-area__title">Upload your files</h1>
-                                <p class="upload-area__paragraph">
-                                    Files should be images or any file type.
-                                    <strong class="upload-area__tooltip">
-                                        Like
-                                        <span class="upload-area__tooltip-data"></span> <!-- Data Will be Comes From Js -->
-                                    </strong>
-                                </p>
-                            </div>
-                            <!-- End Header -->
-                    
-                            <!-- Drop Zone -->
-                            <div id="dropZoon" class="upload-area__drop-zoon drop-zoon">
-                                <span class="drop-zoon__icon">
-                                    <i class='bx bxs-file-image'></i>
-                                </span>
-                                <p class="drop-zoon__paragraph"> Click to browse</p>
-                                <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
-                                <div id="previewImages" class="drop-zoon__preview-images"></div>
-                                <input type="file" id="fileInput" class="drop-zoon__file-input" name="upload[]" multiple>
-                            </div>                                                   
-                            <!-- End Drop Zone -->
-                    
-                            <!-- File Details -->
-                            <div id="fileDetails" class="upload-area__file-details file-details">
-                                <h3 class="file-details__title">Uploaded Files</h3>
-                                <div id="uploadedFiles" class="uploaded-files"></div>
-                            </div>
-                            <!-- End File Details -->
-                    
-                            <!-- Additional Input -->
-                            <div class="upload-area__additional-input">
-                                <label for="userEmail" class="additional-input__label">Your Email:</label>
-                                <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email">
-                            </div>
-                            <!-- End Additional Input -->
-                    
-                            <!-- Submit Button -->
-                            <div class="upload-area__footer">
-                                <button type="submit" class="upload-button">Send</button>
-                            </div>
-                            <!-- End Submit Button -->
-                        </div>
-                    </form>
-                    <!-- End Upload Area -->
-        
-                    @if(session('error'))
-                        <div class="error-message">
-                            <p>{{ session('error') }}</p>
-                        </div>
-                    @endif
-                    <div class="spacer-double"></div>
-                </div>
-                <div class="col-md-6">
-                    <img src="{{ asset('asset/images/misc/se.png') }}" class="img-fluid anim-up-down" alt="" />
-                </div>
-            </div>
-        </div>
-    </section>
+
+<!-- Loading Spinner Overlay -->
+<div class="loading-spinner" id="loadingSpinner">
+   <div class="spinner"></div>
 </div>
-<!-- content close -->
+
+<div class="no-bottom no-top" id="content">
+   <div id="top"></div>
+   <section id="section-hero" aria-label="section" data-bgimage="url({{asset('images/bg.jpg')}}) bottom">
+      <div class="container">
+         <div class="row align-items-center">
+            <div class="col-md-6">
+               @if(session('link'))
+               <div class="alert alert-success download-link">
+                  <p>
+                     File uploaded successfully. Share this link to download:
+                     <a href="{{ session('link') }}">{{ session('link') }}</a>
+                  </p>
+
+                  <!-- Copy button -->
+                  <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
+
+                  <!-- Share button (for browsers with Web Share API support) -->
+                  <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
+               </div>
+
+               <!-- JavaScript for Copy and Share functionality -->
+               <script>
+                  function copyToClipboard(link) {
+                     const tempInput = document.createElement("input");
+                     tempInput.value = link;
+                     document.body.appendChild(tempInput);
+                     tempInput.select();
+                     document.execCommand("copy");
+                     document.body.removeChild(tempInput);
+                     alert("Link copied to clipboard!");
+                  }
+
+                  function shareLink(link) {
+                     if (navigator.share) {
+                        navigator
+                           .share({
+                              title: "File Download Link",
+                              text: "Check out this file:",
+                              url: link,
+                           })
+                           .then(() => {
+                              console.log("Thanks for sharing!");
+                           })
+                           .catch((err) => {
+                              console.error("Error sharing:", err);
+                           });
+                     } else {
+                        alert("Web Share API not supported in this browser.");
+                     }
+                  }
+               </script>
+               @endif @if(session('success'))
+               <div class="alert alert-success success-message">
+                  <p>{{ session('success') }}</p>
+               </div>
+               @endif
+
+               <form class="form-container" action="{{ route('start_send_for_user') }}" method="POST" enctype="multipart/form-data" onsubmit="showLoadingSpinner()">
+                  @csrf
+                  <div id="uploadArea" class="upload-area">
+                     <div class="upload-area__header">
+                        <h1 class="upload-area__title">Upload your files</h1>
+                        <p class="upload-area__paragraph">
+                           Files should be images or any file type.
+                           <strong class="upload-area__tooltip">
+                              Like
+                              <span class="upload-area__tooltip-data"></span>
+                           </strong>
+                        </p>
+                     </div>
+
+                     <div id="dropZoon" class="upload-area__drop-zoon drop-zoon" onclick="document.getElementById('fileInput').click()">
+                        <span class="drop-zoon__icon">
+                           <i class="bx bxs-file-image"></i>
+                        </span>
+                        <p class="drop-zoon__paragraph">Click to browse</p>
+                        <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
+                        <div id="previewImages" class="drop-zoon__preview-images"></div>
+                        <!-- Use accept="image/*" to limit to images only -->
+                        <input type="file" id="fileInput" class="drop-zoon__file-input" name="upload[]" multiple accept="image/*" style="display: none;" />
+                     </div>
+
+                     <div id="fileDetails" class="upload-area__file-details file-details">
+                        <h3 class="file-details__title">Uploaded Files</h3>
+                        <div id="uploadedFiles" class="uploaded-files"></div>
+                     </div>
+
+                     <div class="upload-area__additional-input">
+                        <label for="userEmail" class="additional-input__label">Your Email:</label>
+                        <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" />
+                     </div>
+
+                     <div class="upload-area__footer">
+                        <button type="submit" class="upload-button" id="submitButton">Send</button>
+                     </div>
+                  </div>
+               </form>
+
+               @if(session('error'))
+               <div class="error-message">
+                  <p>{{ session('error') }}</p>
+               </div>
+               @endif
+               <div class="spacer-double"></div>
+            </div>
+            <div class="col-md-6">
+               <img src="{{ asset('asset/images/misc/se.png') }}" class="img-fluid anim-up-down" alt="" />
+            </div>
+         </div>
+      </div>
+   </section>
+   <div id="newsspec-19854-app" class="news-app-promo">
+      <div class="news-app-promo-text">
+         <div class="news-app-promo-text__download">Download App.</div>
+      </div>
+      <div class="news-app-promo__section">
+         <div class="news-app-promo-subsection">
+            <img class="mimimimi" src="{{asset('asset/6C8CAC04-BDD7-411D-AADE-6E0323448688-removebg-preview.png')}}" />
+         </div>
+         <div class="news-app-promo-subsection">
+            <a class="news-app-promo-subsection--link news-app-promo-subsection--playstore" href="{{asset('asset/y1hYiMRmBU8uTChXu8bo.apk')}}" target="_parent">
+               <img style="margin-bottom: 0px;!imporatnt" class="news-app-promo__play-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/google_play_store.svg" width="161" height="auto" border="0" />
+            </a>
+            <!--<a class="news-app-promo-subsection--link news-app-promo-subsection--appstore" href="https://itunes.apple.com/us/app/bbc-news/id364147881?mt=8" target="_parent">-->
+            <!--    <img class="news-app-promo__app-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/ios_app_store.svg" width="161" height="auto" border="0">-->
+            <!--</a>-->
+         </div>
+      </div>
+      <div class="news-app-promo__section"></div>
+   </div>
+</div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const dropZoon = document.querySelector('#dropZoon');
-    const fileInput = document.querySelector('#fileInput');
-    const previewImages = document.querySelector('#previewImages');
-    const uploadedFiles = document.querySelector('#uploadedFiles');
-    const loadingText = document.querySelector('#loadingText');
+   document.addEventListener("DOMContentLoaded", function () {
+      const dropZoon = document.querySelector("#dropZoon");
+      const fileInput = document.querySelector("#fileInput");
+      const previewImages = document.querySelector("#previewImages");
+      const uploadedFiles = document.querySelector("#uploadedFiles");
+      const loadingText = document.querySelector("#loadingText");
 
-    dropZoon.addEventListener('dragover', function(event) {
-        event.preventDefault();
-        dropZoon.classList.add('drop-zoon--over');
-    });
+      dropZoon.addEventListener("dragover", function (event) {
+         event.preventDefault();
+         dropZoon.classList.add("drop-zoon--over");
+      });
 
-    dropZoon.addEventListener('dragleave', function(event) {
-        dropZoon.classList.remove('drop-zoon--over');
-    });
+      dropZoon.addEventListener("dragleave", function (event) {
+         dropZoon.classList.remove("drop-zoon--over");
+      });
 
-    dropZoon.addEventListener('drop', function(event) {
-        event.preventDefault();
-        dropZoon.classList.remove('drop-zoon--over');
-        handleFiles(event.dataTransfer.files);
-    });
+      dropZoon.addEventListener("drop", function (event) {
+         event.preventDefault();
+         dropZoon.classList.remove("drop-zoon--over");
+         handleFiles(event.dataTransfer.files);
+      });
 
-    dropZoon.addEventListener('click', function(event) {
-        fileInput.click();
-    });
+      dropZoon.addEventListener("click", function (event) {
+         fileInput.click();
+      });
 
-    fileInput.addEventListener('change', function(event) {
-        handleFiles(event.target.files);
-    });
+      fileInput.addEventListener("change", function (event) {
+         handleFiles(event.target.files);
+      });
 
-    function handleFiles(files) {
-        previewImages.innerHTML = "";
-        uploadedFiles.innerHTML = "";
+      function handleFiles(files) {
+         previewImages.innerHTML = "";
+         uploadedFiles.innerHTML = "";
+         showLoadingSpinner(); // Show loading spinner
 
-        for (const file of files) {
+         for (const file of files) {
             const fileReader = new FileReader();
             const fileSize = file.size;
 
             if (fileValidate(fileSize)) {
-                dropZoon.classList.add('drop-zoon--Uploaded');
-                loadingText.style.display = "block";
+               dropZoon.classList.add("drop-zoon--Uploaded");
 
-                fileReader.addEventListener('load', function(e) {
-                    const previewContainer = document.createElement("div");
-                    previewContainer.className = "preview-container";
+               fileReader.addEventListener("load", function (e) {
+                  const previewContainer = document.createElement("div");
+                  previewContainer.className = "preview-container";
 
-                    if (file.type.startsWith("image/")) {
-                        const previewImage = document.createElement("img");
-                        previewImage.src = e.target.result;
-                        previewImage.className = "drop-zoon__preview-image";
-                        previewContainer.appendChild(previewImage);
-                    } else {
-                        const previewText = document.createElement("span");
-                        previewText.textContent = file.name;
-                        previewText.className = "drop-zoon__preview-text";
-                        previewContainer.appendChild(previewText);
-                    }
-                    previewImages.appendChild(previewContainer);
+                  if (file.type.startsWith("image/")) {
+                     const previewImage = document.createElement("img");
+                     previewImage.src = e.target.result;
+                     previewImage.className = "drop-zoon__preview-image";
+                     previewContainer.appendChild(previewImage);
+                  }
 
-                    const uploadedFile = document.createElement("div");
-                    uploadedFile.className = "uploaded-file";
+                  const fileNameText = document.createElement("p");
+                  fileNameText.textContent = file.name;
+                  fileNameText.className = "file-name-text";
+                  previewContainer.appendChild(fileNameText);
+                  previewImages.appendChild(previewContainer);
 
-                    const iconContainer = document.createElement("div");
-                    iconContainer.className = "uploaded-file__icon-container";
-                    const icon = document.createElement("i");
-                    icon.className = "bx bxs-file-blank uploaded-file__icon";
-                    const iconText = document.createElement("span");
-                    iconText.className = "uploaded-file__icon-text";
-                    iconText.textContent = file.name;
-                    iconContainer.appendChild(icon);
-                    iconContainer.appendChild(iconText);
+                  const uploadedFile = document.createElement("div");
+                  uploadedFile.className = "uploaded-file";
 
-                    const fileInfo = document.createElement("div");
-                    fileInfo.className = "uploaded-file__info";
-                    const fileName = document.createElement("span");
-                    fileName.className = "uploaded-file__name";
-                    fileName.textContent = file.name;
-                    const fileCounter = document.createElement("span");
-                    fileCounter.className = "uploaded-file__counter";
-                    fileCounter.textContent = "0%";
-                    fileInfo.appendChild(fileName);
-                    fileInfo.appendChild(fileCounter);
+                  const iconContainer = document.createElement("div");
+                  iconContainer.className = "uploaded-file__icon-container";
+                  const icon = document.createElement("i");
+                  icon.className = "bx bxs-file-blank uploaded-file__icon";
+                  const iconText = document.createElement("span");
+                  iconText.className = "uploaded-file__icon-text";
+                  iconText.textContent = file.name;
+                  iconContainer.appendChild(icon);
+                  iconContainer.appendChild(iconText);
 
-                    uploadedFile.appendChild(iconContainer);
-                    uploadedFile.appendChild(fileInfo);
+                  const fileInfo = document.createElement("div");
+                  fileInfo.className = "uploaded-file__info";
+                  const fileName = document.createElement("span");
+                  fileName.className = "uploaded-file__name";
+                  fileName.textContent = file.name;
+                  const fileCounter = document.createElement("span");
+                  fileCounter.className = "uploaded-file__counter";
+                  fileCounter.textContent = "0%";
+                  fileInfo.appendChild(fileName);
+                  fileInfo.appendChild(fileCounter);
 
-                    uploadedFiles.appendChild(uploadedFile);
+                  uploadedFile.appendChild(iconContainer);
+                  uploadedFile.appendChild(fileInfo);
+                  uploadedFiles.appendChild(uploadedFile);
 
-                    progressMove(fileCounter);
-                });
+                  progressMove(fileCounter);
+               });
 
-                fileReader.readAsDataURL(file);
+               fileReader.readAsDataURL(file);
             } else {
-                alert('Please ensure your file is 1GB or less');
+               alert("Please ensure your file is 1GB or less");
             }
-        }
+         }
 
-        setTimeout(function() {
-            loadingText.style.display = "none";
-            previewImages.style.display = 'block';
-        }, 500);
-    }
+         setTimeout(function () {
+            hideLoadingSpinner(); // Hide loading spinner once processing is done
+         }, 500);
+      }
 
-    function progressMove(fileCounter) {
-        let counter = 0;
+      function progressMove(fileCounter) {
+         let counter = 0;
 
-        setTimeout(() => {
+         setTimeout(() => {
             let counterIncrease = setInterval(() => {
-                if (counter === 100) {
-                    clearInterval(counterIncrease);
-                } else {
-                    counter += 10;
-                    fileCounter.innerHTML = `${counter}%`;
-                }
+               if (counter === 100) {
+                  clearInterval(counterIncrease);
+               } else {
+                  counter += 10;
+                  fileCounter.innerHTML = `${counter}%`;
+               }
             }, 100);
-        }, 600);
-    }
+         }, 600);
+      }
 
-    function fileValidate(fileSize) {
-        return fileSize <= 1073741824; // 1GB in bytes
-    }
-});
+      function fileValidate(fileSize) {
+         return fileSize <= 1073741824; // 1GB in bytes
+      }
+   });
 
+   function showLoadingSpinner() {
+      document.getElementById("loadingSpinner").style.display = "flex";
+   }
 
+   function hideLoadingSpinner() {
+      document.getElementById("loadingSpinner").style.display = "none";
+   }
 </script>
+<style>
+   .news-app-promo {
+      box-sizing: border-box;
+      background-color: #000;
+      padding: 0.5em;
+      margin-top: 1em;
+   }
+
+   .news-app-promo__section {
+      display: inline-block;
+      margin: 0 auto;
+      position: relative;
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+   }
+
+   .news-app-promo-text {
+      color: #fff;
+      font-family: helvetica;
+      min-width: 277px;
+      border-right: 0.25em solid #fff;
+      border-left: 0.25em solid #fff;
+      padding: 0 1em;
+      width: 35%;
+      margin: 1em auto;
+      display: block;
+   }
+
+   .news-app-promo-text__tagline {
+      font-size: 1.09em;
+   }
+
+   .news-app-promo-text__download {
+      font-size: 2.25em;
+      font-weight: 600;
+   }
+
+   .news-app-promo-buttons {
+      margin: 0 auto;
+      max-width: 35%;
+      display: block;
+   }
+
+   .news-app-promo-buttons__buttons {
+      display: block;
+   }
+
+   .news-app-promo-buttons__logo {
+      display: inline-block;
+   }
+
+   .news-app-promo-subsection {
+      display: inline-block;
+      margin: 0 auto;
+      margin-right: 10px;
+   }
+
+   .mimimimi {
+      display: inline-block;
+      width: 136px !important;
+      height: auto !important;
+      margin-bottom: 8px;
+   }
+
+   .news-app-promo__play-store,
+   .news-app-promo__app-store {
+      display: block;
+      width: 161px;
+      height: auto;
+      margin-bottom: 8px;
+   }
+
+   .news-app-promo-subsection--link {
+      text-decoration: none;
+      border: 0;
+   }
+</style>
 @endsection
