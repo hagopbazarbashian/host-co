@@ -7,6 +7,7 @@ use App\Models\transfer;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
+use Auth;
 use Carbon\Carbon;
 
 class transferInfoforuserloginController extends Controller
@@ -41,6 +42,7 @@ class transferInfoforuserloginController extends Controller
                 'file_path' => 'uploads/' . $zipFileName,
                 'delete_time' => now()->addHour(), // Set to delete after 1 hour
                 'uniq_link' => $uniqueLink,
+                'user_id'=>auth()->user()->id
             ];
 
             // Save the data to the database (replace with your actual model)

@@ -42,6 +42,10 @@
                             @endauth
                             {{-- <li><a class="menu-item" href="website-builder.html">Pricing</a></li> --}}
                             <li><a class="menu-item" href="#" id="contactUsLink">Contact Us</a></li>
+                            <li><a class="menu-item" href="{{route('send_text')}}">send text</a></li>
+                            @auth
+                            <li><a class="menu-item" href="{{ route('send_text') }}"><i class="fas fa-folder-open"></i> Show Your Files</a></li>
+                            @endauth
                         </ul>
                     </div>
                     @guest

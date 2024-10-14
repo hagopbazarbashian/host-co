@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\transferInfoController;
 use App\Http\Controllers\User\HomeControllerr;
+use App\Http\Controllers\User\SendTextController;
 use App\Http\Controllers\transferInfoforuserloginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SocialAuthController;
@@ -58,6 +59,11 @@ Route::middleware(['web:web'])->group(function () {
 
     //     return 'Email sent!';
     // });
+
+
+    //Text Syetem
+    Route::get('send-text' , [SendTextController::class , 'index'])->name('send_text');
+    Route::get('start-proces' , [SendTextController::class , 'proces'])->name('start_proces');
 });
 
 Route::get('/Privacy-Policy', function () {
