@@ -4,27 +4,13 @@
 <!-- Tour plugin Start -->
 <script src="{{asset('admin/assets/vendor/sheperd/dist/js/sheperd.min.js')}}"></script>
 <script src="{{asset('admin/assets/js/plugins/tour.js')}}" defer></script>
-
-
 <!-- Flatpickr Script -->
 <script src="{{asset('admin/assets/vendor/flatpickr/dist/flatpickr.min.js')}}"></script>
 <script src="{{asset('admin/assets/js/plugins/flatpickr.js')}}" defer></script>
-
-
-
-  <!-- Select2 Script -->
-  <script src="{{asset('admin/assets/js/plugins/select2.js')}}" defer></script>
-
-
-
-
+<!-- Select2 Script -->
+<script src="{{asset('admin/assets/js/plugins/select2.js')}}" defer></script>
 <!-- Slider-tab Script -->
 <script src="{{asset('admin/assets/js/plugins/slider-tabs.js')}}"></script>
-
-
-
-
-
 <!-- SwiperSlider Script -->
 <script src="{{asset('admin/assets/vendor/swiperSlider/swiper-bundle.min.js')}}"></script>
 <script src="{{asset('admin/assets/js/plugins/swiper-slider.js')}}" defer></script>

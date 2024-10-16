@@ -23,9 +23,9 @@
         <div class="sidebar-list">
             <!-- Sidebar Menu Start -->
             <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page"
-                        href="../dashboard/index.html">
+                <li class="nav-item">  
+                    <a class="nav-link {{ request()->routeIs('admin_panel') ? 'active' : '' }}" aria-current="page"
+                        href="{{route('admin_panel')}}">
                         <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dashboard"
                             data-bs-original-title="Dashboard">
                             <svg width="20" class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page"
+                    <a class="nav-link {{ request()->routeIs('all_user') ? 'active' : '' }}" aria-current="page"
                         href="{{route('all_user')}}">
                         <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Rating"
                             data-bs-original-title="Rating">
