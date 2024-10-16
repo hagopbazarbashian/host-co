@@ -115,6 +115,117 @@
          transform: rotate(360deg);
       }
    }
+   .upload-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      position: relative;
+      background-color: #f9f9f9;
+      margin-top: 20px;
+   }
+
+   .upload-area:hover {
+      background-color: #e9e9e9;
+   }
+
+   .upload-button {
+      padding: 10px 20px; /* Comfortable padding for the button text */
+      background-color: #3498db; /* Your choice of background color */
+      border: none; /* No borders */
+      color: white; /* Text color */
+      cursor: pointer; /* Cursor indicates it's clickable */
+      margin-top: 10px; /* Space above the button */
+      width: 100%; /* Makes the button full width */
+      margin: 0px !important;
+      border-radius: 25px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-around;
+      box-sizing: border-box;
+   }
+
+   .additional-input__field {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+   }
+
+   /* Styling for the list of uploaded files */
+   .uploaded-files {
+      /*list-style-type: none;  // Removes bullets from the list*/
+      padding: 0;
+   }
+   .uploaded-files li {
+      margin-top: 5px; // Adds space between list items
+      font-size: 16px; // Larger text for visibility
+   }
+
+   .uploaded-file {
+      padding: 5px;
+      background-color: #f0f0f0;
+      margin-top: 5px;
+   }
+
+   .file-input-cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0;
+   }
+
+   .file-input-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 50px;
+      text-align: center;
+      background-color: #f3f3f3;
+      z-index: 0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+   }
+   
+   .download-link {
+   font-size: 16px;
+   line-height: 1.5;
+}
+
+.download-link a {
+   word-wrap: break-word;
+   display: block;
+   margin-top: 5px;
+}
+
+.button-container {
+   display: flex;
+   gap: 10px;
+   margin-top: 10px;
+}
+
+.button-container .btn {
+   flex: 1;
+}
+
+@media (max-width: 600px) {
+   .button-container {
+      flex-direction: column;
+      align-items: stretch;
+   }
+
+   .download-link a {
+      word-wrap: break-word;
+   }
+}
+
 </style>
 
 <!-- Loading Spinner Overlay -->
@@ -129,18 +240,21 @@
          <div class="row align-items-center">
             <div class="col-md-6">
                @if(session('link'))
-               <div class="alert alert-success download-link">
-                  <p>
-                     File uploaded successfully. Share this link to download:
-                     <a href="{{ session('link') }}">{{ session('link') }}</a>
-                  </p>
+              <div class="alert alert-success download-link">
+   <p>
+      File uploaded successfully. Share this link to download:
+      <a href="{{ session('link') }}">{{ session('link') }}</a>
+   </p>
 
-                  <!-- Copy button -->
-                  <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
+   <!-- Button container for responsive layout -->
+   <div class="button-container">
+      <!-- Copy button -->
+      <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
 
-                  <!-- Share button (for browsers with Web Share API support) -->
-                  <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
-               </div>
+      <!-- Share button (for browsers with Web Share API support) -->
+      <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
+   </div>
+</div>
 
                <!-- JavaScript for Copy and Share functionality -->
                <script>
@@ -173,50 +287,25 @@
                      }
                   }
                </script>
-               @endif @if(session('success'))
-               <div class="alert alert-success success-message">
-                  <p>{{ session('success') }}</p>
-               </div>
-               @endif
+               @endif 
+               
 
-               <form class="form-container" action="{{ route('start_send_for_user') }}" method="POST" enctype="multipart/form-data" onsubmit="showLoadingSpinner()">
+               <form class="form-container" action="{{ route('start_send_for_user') }}" method="POST" enctype="multipart/form-data">
                   @csrf
-                  <div id="uploadArea" class="upload-area">
-                     <div class="upload-area__header">
-                        <h1 class="upload-area__title">Upload your files</h1>
-                        <p class="upload-area__paragraph">
-                           Files should be images or any file type.
-                           <strong class="upload-area__tooltip">
-                              Like
-                              <span class="upload-area__tooltip-data"></span>
-                           </strong>
-                        </p>
+                  <div class="upload-area">
+                     <h1>Upload your files</h1>
+                     <p>Click or drop files below</p>
+                     <!-- File input area -->
+                     <div style="height: 50px; position: relative;">
+                        <input type="file" id="fileInput" class="file-input-cover" name="upload[]" multiple accept="image/*, application/pdf" />
+                        <div class="file-input-label">Click here to select files</div>
                      </div>
-
-                     <div id="dropZoon" class="upload-area__drop-zoon drop-zoon" onclick="document.getElementById('fileInput').click()">
-                        <span class="drop-zoon__icon">
-                           <i class="bx bxs-file-image"></i>
-                        </span>
-                        <p class="drop-zoon__paragraph">Click to browse</p>
-                        <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
-                        <div id="previewImages" class="drop-zoon__preview-images"></div>
-                        <!-- Use accept="image/*" to limit to images only -->
-                        <input type="file" id="fileInput" class="drop-zoon__file-input" name="upload[]" multiple accept="image/*" style="display: none;" />
-                     </div>
-
-                     <div id="fileDetails" class="upload-area__file-details file-details">
-                        <h3 class="file-details__title">Uploaded Files</h3>
-                        <div id="uploadedFiles" class="uploaded-files"></div>
-                     </div>
-
-                     <div class="upload-area__additional-input">
-                        <label for="userEmail" class="additional-input__label">Your Email:</label>
-                        <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" />
-                     </div>
-
-                     <div class="upload-area__footer">
-                        <button type="submit" class="upload-button" id="submitButton">Send</button>
-                     </div>
+                     <ul id="fileList" class="uploaded-files"></ul>
+                     <!-- This is where file names will be listed -->
+                     <ul id="uploadedFiles" class="uploaded-files"></ul>
+                     <label for="userEmail" class="additional-input__label">Your Email:</label>
+                     <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" />
+                     <button type="submit" class="upload-button">Send</button>
                   </div>
                </form>
 
@@ -461,5 +550,66 @@
       text-decoration: none;
       border: 0;
    }
+
+   .loading-spinner {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+      0% {
+         transform: rotate(0deg);
+      }
+      100% {
+         transform: rotate(360deg);
+      }
+   }
 </style>
+<!-- Loading Spinner Overlay -->
+<div class="loading-spinner" id="loadingSpinner">
+   <div class="spinner"></div>
+</div>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const fileInput = document.getElementById("fileInput");
+      const fileList = document.getElementById("fileList");
+
+      fileInput.addEventListener("change", function (event) {
+         const files = event.target.files;
+         fileList.innerHTML = ""; // Clear existing file names
+
+         Array.from(files).forEach((file) => {
+            const li = document.createElement("li");
+            li.textContent = file.name;
+            fileList.appendChild(li);
+         });
+      });
+   });
+
+   document.addEventListener("DOMContentLoaded", function () {
+      const sendButton = document.querySelector(".upload-button");
+      const loadingSpinner = document.getElementById("loadingSpinner");
+
+      sendButton.addEventListener("click", function () {
+         loadingSpinner.style.display = "flex"; // Show the spinner
+      });
+   });
+</script>
 @endsection

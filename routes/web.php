@@ -6,7 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\transferInfoController;
 use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController};
-use App\Http\Controllers\Admin\AdminHomePage;
+use App\Http\Controllers\Admin\{AdminHomePage,AdminUserControler};
 use App\Http\Controllers\transferInfoforuserloginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SocialAuthController;
@@ -69,6 +69,9 @@ Route::middleware(['web:web'])->group(function () {
 
     //Admin  Syetem 
     Route::get('admin-panel' ,[AdminHomePage::class , 'index'])->name('admin_panel');
+
+    //Show User Admin
+    Route::get('all-user' , [AdminUserControler::class , 'index'])->name('all_user');  
 });
 
 Route::get('/Privacy-Policy', function () {
