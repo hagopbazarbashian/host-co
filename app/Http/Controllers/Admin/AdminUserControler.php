@@ -13,5 +13,12 @@ class AdminUserControler extends Controller
         return view('admin.show-all-users',compact('users'));
 
      }
+
+
+     public function removeuser($id){
+        $User = User::find($id);
+        $User->delete();
+        return redirect()->back()->with('success', 'Deleted successful!');
+     }
 }
      

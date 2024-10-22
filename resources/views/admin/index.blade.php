@@ -6,7 +6,7 @@
           <div class="row">
              <div class="col-sm-6 col-lg-6 col-xl-3">
                 <div class="card card-block card-stretch card-height">
-                   <div class="card-body">
+                   <div class="card-body">  
                       <div class="d-flex align-items-center justify-content-between">
                          <div class="iq-cart-text text-capitalize">
                             <p class="mb-0">

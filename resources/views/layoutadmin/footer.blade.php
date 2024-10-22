@@ -20,7 +20,7 @@
                 ></path>
              </svg>
           </span>
-          by <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
+          by <a href="smartdevelop.am" target="_blank">Smart Develop</a>.
        </div>
     </div>
  </footer>

@@ -12,7 +12,7 @@ class transfer extends Model
         'file_path',
         'delete_time',
         'uniq_link',  
-        'user_id'
+        'user_id'   
     ];
 
     public $timestamps = true;

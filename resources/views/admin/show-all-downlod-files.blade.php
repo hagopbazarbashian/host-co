@@ -22,28 +22,16 @@
                       <table id="user-list-table" class="table custom-table" role="grid" data-toggle="data-table">
                          <thead>
                             <tr class="ligth">
-                               <th>Profile</th>
-                               <th>Name</th>
-                               <th>Phone Number</th>
-                               <th>Email</th>
-                               <th>Admin</th>
-                               <th>Join Date</th>
+                               <th>Files Name</th>
+                               <th>Date</th>
                                <th style="min-width: 100px;">Action</th>
                             </tr>
                          </thead>
                          <tbody>
-                            @foreach ($users as $user)
+                            @foreach ($transfers as $transfer)
                             <tr>
-                                <td class="text-center"><img class="bg-primary-subtle rounded img-fluid avatar-40 me-3" src="{{asset('admin/assets/images/avatars/01.png')}}" alt="profile" loading="lazy" /></td>
-                                <td>{{$user->name}}</td>
-                                <td>{{$user->Phone}}</td>
-                                <td>{{$user->email}}</td>
-                                @if ($user->is_admin == 1)
-                                <td><span class="badge" style="background-color: blue">Admin</span></td>
-                                @else
-                                <td><span class="badge bg-primary">Active</span></td>
-                                @endif  
-                                <td>{{ \Carbon\Carbon::parse($user->created_at)->format('Y/m/d') }}</td>
+                                <td>{{$transfer->file_path}}</td>
+                                <td>{{ \Carbon\Carbon::parse($transfer->created_at)->format('Y/m/d') }}</td>
                                 <td>
                                    <div class="flex align-items-center list-user-action">
                                       {{-- <a class="btn btn-sm btn-icon btn-success rounded" data-bs-toggle="tooltip" data-placement="top" title="" data-bs-original-title="Add" href="#">
@@ -51,7 +39,7 @@
                                             <i class="fa-solid fa-user-plus fa-xs"></i>
                                          </span>
                                       </a> --}}
-                                      <form action="{{ route('remove_user', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                      <form action="{{route('remove_files',$transfer->id)}}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                        @csrf <!-- CSRF token for security -->
                                        @method('DELETE') <!-- Spoofing the method to DELETE -->
                                    

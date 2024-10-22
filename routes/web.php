@@ -6,7 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\transferInfoController;
 use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController};
-use App\Http\Controllers\Admin\{AdminHomePage,AdminUserControler};
+use App\Http\Controllers\Admin\{AdminHomePage,AdminUserControler,AdminFilesController};
 use App\Http\Controllers\transferInfoforuserloginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SocialAuthController;
@@ -68,14 +68,24 @@ Route::middleware(['web:web'])->group(function () {
     Route::get('show-files/{id}' ,[ShowUserFilesController::class , 'index'])->name('show_files');
 
     //Admin  Syetem 
-    Route::get('admin-panel' ,[AdminHomePage::class , 'index'])->name('admin_panel');
+    Route::get('admin-panel' ,[AdminHomePage::class , 'index'])->name('admin_panel');  
 
     //Show User Admin
     Route::get('all-user' , [AdminUserControler::class , 'index'])->name('all_user');  
+
+    //Remove User Admin
+    Route::delete('remove-user/{id}' , [AdminUserControler::class , 'removeuser'])->name('remove_user');
+
+    //Admin Remove Files index
+    Route::get('all-files' , [AdminFilesController::class , 'index'])->name('all_files');   
+
+    //Admin dete Files
+    Route::delete('all-files-remove/{id}' , [AdminFilesController::class , 'removefiles'])->name('remove_files');   
+
 });
 
 Route::get('/Privacy-Policy', function () {
-    return  view('Privacy-Policy'); 
+    return  view('Privacy-Policy');   
 });
 
 Route::get('/Terms-Conditions', function () {
