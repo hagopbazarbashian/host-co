@@ -15,7 +15,7 @@ class LoginController extends Controller
     }
 
 
-    public function loginsumbit(LoginRequest $request){
+    public function loginsumbit(LoginRequest $request){  
 
         $credential = [   
             'email' => $request->email, 
@@ -24,6 +24,11 @@ class LoginController extends Controller
 
         if (Auth::guard('web')->attempt($credential)) {
           $user = Auth::guard('web')->user();  
+          
+          // Store IP address
+          $user->ip_address = $request->ip();
+          $user->save();
+
           if($user->is_admin == 1){
             return redirect()->route('admin_panel');
           }

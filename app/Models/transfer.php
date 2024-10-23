@@ -18,4 +18,4 @@ class transfer extends Model
     public $timestamps = true;
 
 }
-  
+    

@@ -1,10 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\transferInfoController;
+use App\Http\Controllers\{RegisterController,transferInfoController,LoginController,HomeController,LinkClickController};
 use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController};
 use App\Http\Controllers\Admin\{AdminHomePage,AdminUserControler,AdminFilesController};
 use App\Http\Controllers\transferInfoforuserloginController;
@@ -14,7 +11,7 @@ use App\Jobs\DeleteOldRecords;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Web Routes  
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -23,7 +20,7 @@ use App\Jobs\DeleteOldRecords;
 |
 */
 // Home Page
-Route::get('/',[HomeController::class , 'index'])->name('home');
+Route::get('/',[HomeController::class , 'index'])->middleware('trackVisitors')->name('home');
 // Login page 
 Route::get('free-trial',[LoginController::class , 'index'])->name('free_trial');
 Route::post('login-submit',[LoginController::class , 'loginsumbit'])->name('login_submit');
@@ -37,12 +34,14 @@ Route::post('register-submit',[RegisterController::class , 'registersumbit'])->n
 Route::post('/send-contact', [ContactController::class, 'sendContact'])->name('send_contact');
 
 //Start Tranfer
-Route::post('start-send' , [transferInfoController::class , 'store'])->name('start_send');
+Route::post('start-send' , [transferInfoController::class , 'store'])->name('start_send');   
 Route::get('/download/{uniqueLink}', [transferInfoController::class, 'download'])->name('download.file');
 
+//Recored application downlod 
+Route::post('/track-click', [LinkClickController::class, 'trackClick'])->name('track.click');
 
 Route::middleware(['web:web'])->group(function () {
-  
+    
     Route::get('user-home' , [HomeControllerr::class , 'index'])->name('user_home');
     //Start Tranfer
     Route::post('start-send-user' , [transferInfoforuserloginController::class , 'storeuser'])->name('start_send_for_user');
@@ -84,8 +83,8 @@ Route::middleware(['web:web'])->group(function () {
 
 });
 
-Route::get('/Privacy-Policy', function () {
-    return  view('Privacy-Policy');   
+Route::get('/Privacy-Policy', function () {   
+    return  view('Privacy-Policy');     
 });
 
 Route::get('/Terms-Conditions', function () {
