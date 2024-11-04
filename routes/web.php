@@ -36,13 +36,16 @@ Route::post('/send-contact', [ContactController::class, 'sendContact'])->name('s
 //Start Tranfer
 Route::post('start-send' , [transferInfoController::class , 'store'])->name('start_send');   
 Route::get('/download/{uniqueLink}', [transferInfoController::class, 'download'])->name('download.file');
-
+  
 //Recored application downlod 
 Route::post('/track-click', [LinkClickController::class, 'trackClick'])->name('track.click');
 
 Route::middleware(['web:web'])->group(function () {
     
-    Route::get('user-home' , [HomeControllerr::class , 'index'])->name('user_home');
+    Route::get('user-home', [HomeControllerr::class, 'index'])->name('user_home');
+    
+    
+
     //Start Tranfer
     Route::post('start-send-user' , [transferInfoforuserloginController::class , 'storeuser'])->name('start_send_for_user');
     Route::get('/download/{uniqueLink}', [transferInfoforuserloginController::class, 'downloaduser'])->name('download.file');
