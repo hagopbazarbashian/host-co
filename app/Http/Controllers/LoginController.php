@@ -28,14 +28,21 @@ class LoginController extends Controller
 
         // Store IP address and generate an API token
         $user->ip_address = $request->ip();
-        $user->api_token = Str::random(60);
+
+        // Set an API token if it doesn't exist
+        if (!$user->api_token) {
+            $user->api_token = Str::random(60);
+        }
         $user->save();
+
+        // Save user login state in the session
+        session(['user_logged_in' => true, 'user_id' => $user->id]);
     
         // Check if this is an API request (you could also check headers or route)
         if ($request->is_api) {
             // Return token for API use
             return response()->json([
-                'token' => $user->api_token,
+                'token' => $user->api_token,  
                 'is_admin' => $user->is_admin,
             ]);
         }

@@ -15,13 +15,8 @@ class HomeControllerr extends Controller
         // Find the user with this token
         $user = User::where('api_token', $token)->first();
 
-        // If the token is valid, allow access; otherwise, return Unauthorized
-        if ($user) {
-            // Continue with the authenticated user's request
-            return view('user-home', ['user' => $user]);
-        } else {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+        return view('user-home', ['user' => $user]);
+       
      }
 }
    

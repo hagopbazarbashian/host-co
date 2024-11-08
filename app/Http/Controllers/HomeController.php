@@ -9,6 +9,7 @@ class HomeController extends Controller
 {
     public function index(){
         session(['visited_welcome' => true]); 
+        
         if (Auth::user()) {
             return redirect()->route('user_home');
         }

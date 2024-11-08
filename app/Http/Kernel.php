@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'web' => \App\Http\Middleware\UserMiddleware::class,
         'trackVisitors' => \App\Http\Middleware\TrackVisitors::class,
         'auth.api' => \App\Http\Middleware\ApiTokenMiddleware::class,
+        'checkUserLoggedIn' => \App\Http\Middleware\CheckUserLoggedIn::class,
     ];
 }
