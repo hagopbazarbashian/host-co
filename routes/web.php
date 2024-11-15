@@ -32,7 +32,7 @@ Route::get('register',[RegisterController::class , 'index'])->name('register');
 Route::post('register-submit',[RegisterController::class , 'registersumbit'])->name('register_submit');
    
 Route::post('/send-contact', [ContactController::class, 'sendContact'])->name('send_contact');
-
+  
 //Start Tranfer
 Route::post('start-send' , [transferInfoController::class , 'store'])->name('start_send');   
 Route::get('/download/{uniqueLink}', [transferInfoController::class, 'download'])->name('download.file');

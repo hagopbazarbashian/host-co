@@ -1,79 +1,313 @@
 @extends('layout.app') @section('main-content')
+<style>
+   .drop-zoon {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+   }
+
+   .drop-zoon--over {
+      border-color: #00f;
+   }
+
+   .drop-zoon--Uploaded {
+      border-color: #0f0;
+   }
+
+   .drop-zoon__icon {
+      font-size: 48px;
+      color: #ccc;
+   }
+
+   .drop-zoon__paragraph {
+      font-size: 16px;
+      color: #333;
+   }
+
+   .drop-zoon__loading-text {
+      display: none;
+      font-size: 16px;
+      color: #f00;
+   }
+
+   .preview-container {
+      display: inline-block;
+      margin: 10px;
+      text-align: center;
+   }
+
+   .drop-zoon__preview-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+   }
+
+   .file-name-text {
+      font-size: 14px;
+      color: #333;
+      margin-top: 5px;
+   }
+
+   .uploaded-file {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+   }
+
+   .uploaded-file__icon-container {
+      display: flex;
+      align-items: center;
+   }
+
+   .uploaded-file__icon {
+      font-size: 24px;
+      margin-right: 10px;
+   }
+
+   .uploaded-file__icon-text {
+      font-size: 16px;
+   }
+
+   .uploaded-file__info {
+      display: flex;
+      flex-direction: column;
+   }
+
+   .uploaded-file__name {
+      font-size: 16px;
+   }
+
+   .uploaded-file__counter {
+      font-size: 12px;
+      color: #999;
+   }
+
+   /* Loading spinner styles */
+   .loading-spinner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+      0% {
+         transform: rotate(0deg);
+      }
+      100% {
+         transform: rotate(360deg);
+      }
+   }
+   .upload-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      position: relative;
+      background-color: #f9f9f9;
+      margin-top: 20px;
+   }
+
+   .upload-area:hover {
+      background-color: #e9e9e9;
+   }
+
+   .upload-button {
+      padding: 10px 20px; /* Comfortable padding for the button text */
+      background-color: #3498db; /* Your choice of background color */
+      border: none; /* No borders */
+      color: white; /* Text color */
+      cursor: pointer; /* Cursor indicates it's clickable */
+      margin-top: 10px; /* Space above the button */
+      width: 100%; /* Makes the button full width */
+      margin: 0px !important;
+      border-radius: 25px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-around;
+      box-sizing: border-box;
+   }
+
+   .additional-input__field {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+   }
+
+   /* Styling for the list of uploaded files */
+   .uploaded-files {
+      /*list-style-type: none;  // Removes bullets from the list*/
+      padding: 0;
+   }
+   .uploaded-files li {
+      margin-top: 5px; // Adds space between list items
+      font-size: 16px; // Larger text for visibility
+   }
+
+   .uploaded-file {
+      padding: 5px;
+      background-color: #f0f0f0;
+      margin-top: 5px;
+   }
+
+   .file-input-cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0;
+   }
+
+   .file-input-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 50px;
+      text-align: center;
+      background-color: #f3f3f3;
+      z-index: 0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+   }
+   
+   .download-link {
+   font-size: 16px;
+   line-height: 1.5;
+}
+
+.download-link a {
+   word-wrap: break-word;
+   display: block;
+   margin-top: 5px;
+}
+
+.button-container {
+   display: flex;
+   gap: 10px;
+   margin-top: 10px;
+}
+
+.button-container .btn {
+   flex: 1;
+}
+
+@media (max-width: 600px) {
+   .button-container {
+      flex-direction: column;
+      align-items: stretch;
+   }
+
+   .download-link a {
+      word-wrap: break-word;
+   }
+}
+
+</style>
+
+<!-- Loading Spinner Overlay -->
+<div class="loading-spinner" id="loadingSpinner">
+   <div class="spinner"></div>
+</div>
+
 <div class="no-bottom no-top" id="content">
    <div id="top"></div>
-   <section id="section-hero" aria-label="section" data-bgimage="url({{asset('')}}) bottom">
+   <section id="section-hero" aria-label="section" data-bgimage="url({{asset('images/bg.jpg')}}) bottom">
       <div class="container">
-         <div class="alert alert-success" role="alert">
-            If you log in, you will have full access to all features.
-            <a href="{{ route('free_trial') }}" class="alert-link">Click here to log in</a>.
-         </div>
          <div class="row align-items-center">
             <div class="col-md-6">
                @if(session('link'))
-               <div class="alert alert-success download-link">
-                  <p>File uploaded successfully. Share this link to download: <a href="{{ session('link') }}">{{ session('link') }}</a></p>
-               </div>
-               @endif @if(session('success'))
-               <div class="alert alert-success success-message">
-                  <p>{{ session('success') }}</p>
-               </div>
-               @endif
+              <div class="alert alert-success download-link">
+   <p>
+      File uploaded successfully. Share this link to download:
+      <a href="{{ session('link') }}">{{ session('link') }}</a>
+   </p>
+
+   <!-- Button container for responsive layout -->
+   <div class="button-container">
+      <!-- Copy button -->
+      <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
+
+      <!-- Share button (for browsers with Web Share API support) -->
+      <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
+   </div>
+</div>
+
+               <!-- JavaScript for Copy and Share functionality -->
+               <script>
+                  function copyToClipboard(link) {
+                     const tempInput = document.createElement("input");
+                     tempInput.value = link;
+                     document.body.appendChild(tempInput);
+                     tempInput.select();
+                     document.execCommand("copy");
+                     document.body.removeChild(tempInput);
+                     alert("Link copied to clipboard!");
+                  }
+
+                  function shareLink(link) {
+                     if (navigator.share) {
+                        navigator
+                           .share({
+                              title: "File Download Link",
+                              text: "Check out this file:",
+                              url: link,
+                           })
+                           .then(() => {
+                              console.log("Thanks for sharing!");
+                           })
+                           .catch((err) => {
+                              console.error("Error sharing:", err);
+                           });
+                     } else {
+                        alert("Web Share API not supported in this browser.");
+                     }
+                  }
+               </script>
+               @endif 
+               
                <form class="form-container" action="{{ route('start_send') }}" method="POST" enctype="multipart/form-data">
                   @csrf
-                  <div id="uploadArea" class="upload-area">
-                     <!-- Header -->
-                     <div class="upload-area__header">
-                        <h1 class="upload-area__title">Upload your file</h1>
-                        <p class="upload-area__paragraph">
-                           File should be an image
-                           <strong class="upload-area__tooltip">
-                              Like
-                              <span class="upload-area__tooltip-data"></span>
-                              <!-- Data Will be Comes From Js -->
-                           </strong>
-                        </p>
+                  <div class="upload-area">
+                     <h1>Upload your files</h1>
+                     <p>Click or drop files below</p>
+                     <!-- File input area -->
+                     <div style="height: 50px; position: relative;">
+                        <input type="file" id="fileInput" class="file-input-cover" name="upload[]" multiple accept="image/*, application/pdf" />
+                        <div class="file-input-label">Click here to select files</div>
                      </div>
-                     <!-- End Header -->
-
-                     <!-- Drop Zoon -->
-                     <div id="dropZoon" class="upload-area__drop-zoon drop-zoon">
-                        <span class="drop-zoon__icon">
-                           <i class="bx bxs-file-image"></i>
-                        </span>
-                        <p class="drop-zoon__paragraph">Drop your file here or Click to browse</p>
-                        <span id="loadingText" class="drop-zoon__loading-text">Please Wait</span>
-                        <img src="" alt="Preview Image" id="previewImage" class="drop-zoon__preview-image" draggable="false" />
-                        <input type="file" id="fileInput" class="drop-zoon__file-input" accept="image/*" name="upload" />
-                     </div>
-                     <!-- End Drop Zoon -->
-
-                     <!-- File Details -->
-                     <div id="fileDetails" class="upload-area__file-details file-details">
-                        <h3 class="file-details__title">Uploaded File</h3>
-
-                        <div id="uploadedFile" class="uploaded-file">
-                           <div class="uploaded-file__icon-container">
-                              <i class="bx bxs-file-blank uploaded-file__icon"></i>
-                              <span class="uploaded-file__icon-text"></span>
-                              <!-- Data Will be Comes From Js -->
-                           </div>
-
-                           <div id="uploadedFileInfo" class="uploaded-file__info">
-                              <span class="uploaded-file__name">Project 1</span>
-                              <span class="uploaded-file__counter">0%</span>
-                           </div>
-                        </div>
-                     </div>
-                     <!-- End File Details -->
-
-                     <!-- Submit Button -->
-                     <div class="upload-area__footer">
-                        <button type="submit" class="upload-button">Send</button>
-                     </div>
-                     <!-- End Submit Button -->
+                     <ul id="fileList" class="uploaded-files"></ul>
+                     <!-- This is where file names will be listed -->
+                     <ul id="uploadedFiles" class="uploaded-files"></ul>
+                     <label for="userEmail" class="additional-input__label">Your Email:</label>
+                     <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" />
+                     <button type="submit" class="upload-button">Send</button>
                   </div>
                </form>
-               <!-- End Upload Area -->
+
                @if(session('error'))
                <div class="error-message">
                   <p>{{ session('error') }}</p>
@@ -81,228 +315,22 @@
                @endif
                <div class="spacer-double"></div>
             </div>
-            <!-- Removed xs-hide class -->
             <div class="col-md-6">
-               <img src="{{asset('asset/images/misc/se.png')}}" class="lazy img-fluid anim-up-down" alt="" />
+               <img src="{{ asset('asset/images/misc/se.png') }}" class="img-fluid anim-up-down" alt="" />
             </div>
          </div>
       </div>
    </section>
-   <!-- Reminder Modal with Professional Design -->
-   <div class="modal fade" id="reminderModal" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-         <div class="modal-content shadow-lg border-0">
-            <div class="modal-header bg-primary text-white">
-               <h5 class="modal-title fw-bold" id="reminderModalLabel">
-                  🌟 Welcome to Our Professional Platform!
-               </h5>
-               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center p-4">
-               <h2 class="text-primary fw-bold">Upgrade Your Experience!</h2>
-               <p class="lead text-muted">
-                  Our home page offers a much more professional experience with full access to all the features you need to succeed. Click the button below to explore our professional home page now!
-               </p>
-               <img src="https://transfer.smartdevelop.am/asset/images/IMG_4004.PNG" class="img-fluid rounded mb-3" alt="Professional Home Page" style="max-width: 300px;" />
-            </div>
-            <div class="modal-footer justify-content-center">
-               <a href="{{ route('user_home') }}" class="btn btn-primary btn-lg px-5 shadow-sm">Go to Home Page</a>
-            </div>
-         </div>
-      </div>
-   </div>
-
-   <!-- Include Bootstrap CSS -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-   <!-- Include jQuery (optional, only if using jQuery) -->
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-   <!-- Include Bootstrap JS -->
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-   <!-- JavaScript to trigger the modal -->
-   <script>
-      $(document).ready(function () {
-         // Show the reminder modal when the welcome page loads
-         $("#reminderModal").modal("show");
-      });
-   </script>
-   {{--
-   <section class="no-top">
-      <div class="container">
-         <div class="row align-items-center">
-            <div class="col-lg-6 wow fadeInUp">
-               <img class="img-fluid anim-up-down" src="{{asset('asset/images/misc/server.png')}}" alt="" />
-            </div>
-            <div class="col-lg-6 wow fadeInUp" data-wow-delay=".3s">
-               <div class="p-sm-30 pb-sm-0 mb-sm-0">
-                  <h2>New functionality brings maximum <span class="color-gradient">power</span> to your website.</h2>
-                  <p>Reliable web hosting solutions: empowering your online presence with unparalleled performance, exceptional support, and hassle-free scalability.</p>
-                  <div class="row">
-                     <div class="col-md-5">
-                        <ul class="ul-style-2">
-                           <li><h4>Instant Activation</h4></li>
-                           <li><h4>99.9% Uptime</h4></li>
-                        </ul>
-                     </div>
-                     <div class="col-md-5">
-                        <ul class="ul-style-2">
-                           <li><h4>Reliable Hardware</h4></li>
-                           <li><h4>24 / 7 Support</h4></li>
-                        </ul>
-                     </div>
-                  </div>
-                  <div class="spacer-half"></div>
-                  <a class="btn-main" href="#">Learn More</a>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   --}} {{--
-   <section id="section-pricing" class="no-top" data-bgimage="url(images/background/1.jpg) top">
-      <div class="container">
-         <div class="row">
-            <div class="col-lg-6 offset-lg-3">
-               <div class="text-center">
-                  <h5 class="s2">Hosting Plan</h5>
-                  <h2>Choose Perfect <span class="id-color">Web Hosting</span> Package For You</h2>
-                  <div class="spacer-20"></div>
-               </div>
-            </div>
-         </div>
-         <div class="row">
-            <div class="col text-center">
-               <div class="switch-set">
-                  <div>Monthly Plan</div>
-                  <div><input id="sw-1" class="switch" type="checkbox" /></div>
-                  <div>Yearly Plan</div>
-                  <div class="spacer-20"></div>
-               </div>
-            </div>
-         </div>
-         <div class="row de_pricing-tables shadow-soft g-0" style="display: flex; justify-content: space-around;">
-            <div class="col-xl-3 col-lg-6">
-               <div class="de_pricing-table type-2">
-                  <div class="d-head">
-                     <h3>Starter</h3>
-                     <p>Ideal solution for beginners.</p>
-                  </div>
-                  <div class="d-price">
-                     <h4 class="opt-1">$3.59<span>/mo</span></h4>
-                     <h4 class="opt-2">$2.59<span>/mo</span></h4>
-                     <p>Normally <s>$9.99</s></p>
-                  </div>
-                  <div class="d-action">
-                     <a href="#" class="btn-main opt-1 w-100">Get Monthly Plan</a>
-                     <a href="#" class="btn-main opt-2 w-100">Get Yearly Plan</a>
-                     <p>Auto re-news at regular rate</p>
-                  </div>
-                  <div class="d-group">
-                     <h4>Top Features</h4>
-                     <ul class="d-list">
-                        <li>1 Website</li>
-                        <li>10 GB SSD Storage</li>
-                        <li>Custom Themes</li>
-                        <li>24/7 Customer Support</li>
-                     </ul>
-                  </div>
-                  <div class="d-group">
-                     <h4>Also Includes</h4>
-                     <ul class="d-list">
-                        <li>Free Domain - 1 year</li>
-                        <li>Free CDN Included</li>
-                        <li>Free SSL for the 1st year</li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-            <div class="col-xl-3 col-lg-6">
-               <div class="de_pricing-table type-2">
-                  <div class="d-head">
-                     <h3>Plus</h3>
-                     <p>For those need to running multiple sites.</p>
-                  </div>
-
-                  <div class="d-price">
-                     <h4 class="opt-1">$5.59<span>/mo</span></h4>
-                     <h4 class="opt-2">$3.59<span>/mo</span></h4>
-                     <p>Normally <s>$15.99</s></p>
-                  </div>
-                  <div class="d-action">
-                     <a href="#" class="btn-main opt-1 w-100">Get Monthly Plan</a>
-                     <a href="#" class="btn-main opt-2 w-100">Get Yearly Plan</a>
-                     <p>Auto re-news at regular rate</p>
-                  </div>
-                  <div class="d-group">
-                     <h4>Top Features</h4>
-                     <ul class="d-list">
-                        <li>Unlimited Websites</li>
-                        <li>20 GB SSD Storage</li>
-                        <li>Custom Themes</li>
-                        <li>24/7 Customer Support</li>
-                     </ul>
-                  </div>
-                  <div class="d-group">
-                     <h4>Also Includes</h4>
-                     <ul class="d-list">
-                        <li>Free Domain - 1 year</li>
-                        <li>Free CDN Included</li>
-                        <li>Free SSL Certificate</li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   --}} {{--
-   <section id="section-steps" class="no-top">
-      <div class="container">
-         <div class="row">
-            <div class="col-lg-6 offset-lg-3 text-center">
-               <h5 class="s2">Easy Steps</h5>
-               <h2>How It Works</h2>
-               <p class="lead">Easy hosting made simple: streamlined steps for seamless website setup and management.</p>
-               <div class="spacer-20"></div>
-            </div>
-            <div class="col-md-12 wow fadeInUp">
-               <div class="container-timeline">
-                  <ul>
-                     <li>
-                        <h4>Select Plan</h4>
-                        <p>Selecting the right hosting plan for the success of your website. Tailored to meet your specific needs.</p>
-                     </li>
-                     <li>
-                        <h4>Choose Domain</h4>
-                        <p>Choose a domain name that reflects your website's purpose, content, or the nature of your business.</p>
-                     </li>
-                     <li>
-                        <h4>Login/Register</h4>
-                        <p>Take the first step towards creating your website and reaching a wider audience by registering today.</p>
-                     </li>
-                     <li>
-                        <h4>Make Payment</h4>
-                        <p>We offer a variety of secure payment methods to make your payment process convenient and hassle-free.</p>
-                     </li>
-                  </ul>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   --}}
    <div id="newsspec-19854-app" class="news-app-promo">
       <div class="news-app-promo-text">
          <div class="news-app-promo-text__download">Download App.</div>
       </div>
       <div class="news-app-promo__section">
          <div class="news-app-promo-subsection">
-            <img class="news-app-promo__bbc-logo" src="{{asset('asset/6C8CAC04-BDD7-411D-AADE-6E0323448688-removebg-preview.png')}}" width="106" height="106" />
+            <img class="mimimimi" src="{{asset('asset/6C8CAC04-BDD7-411D-AADE-6E0323448688-removebg-preview.png')}}" />
          </div>
          <div class="news-app-promo-subsection">
-            <a class="news-app-promo-subsection--link news-app-promo-subsection--playstore track-click" href="{{asset('asset/y1hYiMRmBU8uTChXu8bo.apk')}}" target="_parent">
+            <a class="news-app-promo-subsection--link news-app-promo-subsection--playstore" href="{{asset('asset/y1hYiMRmBU8uTChXu8bo.apk')}}" target="_parent">
                <img style="margin-bottom: 0px;!imporatnt" class="news-app-promo__play-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/google_play_store.svg" width="161" height="auto" border="0" />
             </a>
             <!--<a class="news-app-promo-subsection--link news-app-promo-subsection--appstore" href="https://itunes.apple.com/us/app/bbc-news/id364147881?mt=8" target="_parent">-->
@@ -312,306 +340,276 @@
       </div>
       <div class="news-app-promo__section"></div>
    </div>
-   <style>
-      .news-app-promo {
-         box-sizing: border-box;
-         background-color: #000;
-         padding: 0.5em;
-         margin-top: 1em;
-      }
-
-      .news-app-promo__section {
-         display: inline-block;
-         margin: 0 auto;
-         position: relative;
-         width: 100%;
-         text-align: center;
-         margin-top: 8px;
-      }
-
-      .news-app-promo-text {
-         color: #fff;
-         font-family: helvetica;
-         min-width: 277px;
-         border-right: 0.25em solid #fff;
-         border-left: 0.25em solid #fff;
-         padding: 0 1em;
-         width: 35%;
-         margin: 1em auto;
-         display: block;
-      }
-
-      .news-app-promo-text__tagline {
-         font-size: 1.09em;
-      }
-
-      .news-app-promo-text__download {
-         font-size: 2.25em;
-         font-weight: 600;
-      }
-
-      .news-app-promo-buttons {
-         margin: 0 auto;
-         max-width: 35%;
-         display: block;
-      }
-
-      .news-app-promo-buttons__buttons {
-         display: block;
-      }
-
-      .news-app-promo-buttons__logo {
-         display: inline-block;
-      }
-
-      .news-app-promo-subsection {
-         display: inline-block;
-         margin: 0 auto;
-         margin-right: 10px;
-      }
-
-      .news-app-promo__bbc-logo {
-         display: inline-block;
-         width: 146px;
-         height: auto;
-         margin-bottom: 8px;
-      }
-
-      .news-app-promo__play-store,
-      .news-app-promo__app-store {
-         display: block;
-         width: 161px;
-         height: auto;
-         margin-bottom: 8px;
-      }
-
-      .news-app-promo-subsection--link {
-         text-decoration: none;
-         border: 0;
-      }
-   </style>
 </div>
-<!-- content close -->
+
 <script>
-   // Design By
-   // - https://dribbble.com/shots/13992184-File-Uploader-Drag-Drop
+   document.addEventListener("DOMContentLoaded", function () {
+      const dropZoon = document.querySelector("#dropZoon");
+      const fileInput = document.querySelector("#fileInput");
+      const previewImages = document.querySelector("#previewImages");
+      const uploadedFiles = document.querySelector("#uploadedFiles");
+      const loadingText = document.querySelector("#loadingText");
 
-   // Select Upload-Area
-   const uploadArea = document.querySelector("#uploadArea");
+      dropZoon.addEventListener("dragover", function (event) {
+         event.preventDefault();
+         dropZoon.classList.add("drop-zoon--over");
+      });
 
-   // Select Drop-Zoon Area
-   const dropZoon = document.querySelector("#dropZoon");
+      dropZoon.addEventListener("dragleave", function (event) {
+         dropZoon.classList.remove("drop-zoon--over");
+      });
 
-   // Loading Text
-   const loadingText = document.querySelector("#loadingText");
+      dropZoon.addEventListener("drop", function (event) {
+         event.preventDefault();
+         dropZoon.classList.remove("drop-zoon--over");
+         handleFiles(event.dataTransfer.files);
+      });
 
-   // Select File Input
-   const fileInput = document.querySelector("#fileInput");
+      dropZoon.addEventListener("click", function (event) {
+         fileInput.click();
+      });
 
-   // Select Preview Image
-   const previewImage = document.querySelector("#previewImage");
+      fileInput.addEventListener("change", function (event) {
+         handleFiles(event.target.files);
+      });
 
-   // File-Details Area
-   const fileDetails = document.querySelector("#fileDetails");
+      function handleFiles(files) {
+         previewImages.innerHTML = "";
+         uploadedFiles.innerHTML = "";
+         showLoadingSpinner(); // Show loading spinner
 
-   // Uploaded File
-   const uploadedFile = document.querySelector("#uploadedFile");
+         for (const file of files) {
+            const fileReader = new FileReader();
+            const fileSize = file.size;
 
-   // Uploaded File Info
-   const uploadedFileInfo = document.querySelector("#uploadedFileInfo");
+            if (fileValidate(fileSize)) {
+               dropZoon.classList.add("drop-zoon--Uploaded");
 
-   // Uploaded File Name
-   const uploadedFileName = document.querySelector(".uploaded-file__name");
+               fileReader.addEventListener("load", function (e) {
+                  const previewContainer = document.createElement("div");
+                  previewContainer.className = "preview-container";
 
-   // Uploaded File Icon
-   const uploadedFileIconText = document.querySelector(".uploaded-file__icon-text");
+                  if (file.type.startsWith("image/")) {
+                     const previewImage = document.createElement("img");
+                     previewImage.src = e.target.result;
+                     previewImage.className = "drop-zoon__preview-image";
+                     previewContainer.appendChild(previewImage);
+                  }
 
-   // Uploaded File Counter
-   const uploadedFileCounter = document.querySelector(".uploaded-file__counter");
+                  const fileNameText = document.createElement("p");
+                  fileNameText.textContent = file.name;
+                  fileNameText.className = "file-name-text";
+                  previewContainer.appendChild(fileNameText);
+                  previewImages.appendChild(previewContainer);
 
-   // ToolTip Data
-   const toolTipData = document.querySelector(".upload-area__tooltip-data");
+                  const uploadedFile = document.createElement("div");
+                  uploadedFile.className = "uploaded-file";
 
-   // Images Types
-   const imagesTypes = ["jpeg", "png", "svg", "gif"];
+                  const iconContainer = document.createElement("div");
+                  iconContainer.className = "uploaded-file__icon-container";   
+                  const icon = document.createElement("i");
+                  icon.className = "bx bxs-file-blank uploaded-file__icon";
+                  const iconText = document.createElement("span");
+                  iconText.className = "uploaded-file__icon-text";
+                  iconText.textContent = file.name;
+                  iconContainer.appendChild(icon);
+                  iconContainer.appendChild(iconText);
 
-   // Append Images Types Array Inside Tooltip Data
-   toolTipData.innerHTML = [...imagesTypes].join(", .");
+                  const fileInfo = document.createElement("div");
+                  fileInfo.className = "uploaded-file__info";
+                  const fileName = document.createElement("span");
+                  fileName.className = "uploaded-file__name";
+                  fileName.textContent = file.name;
+                  const fileCounter = document.createElement("span");
+                  fileCounter.className = "uploaded-file__counter";
+                  fileCounter.textContent = "0%";
+                  fileInfo.appendChild(fileName);
+                  fileInfo.appendChild(fileCounter);
 
-   // When (drop-zoon) has (dragover) Event
-   dropZoon.addEventListener("dragover", function (event) {
-      // Prevent Default Behavior
-      event.preventDefault();
+                  uploadedFile.appendChild(iconContainer);
+                  uploadedFile.appendChild(fileInfo);
+                  uploadedFiles.appendChild(uploadedFile);
 
-      // Add Class (drop-zoon--over) On (drop-zoon)
-      dropZoon.classList.add("drop-zoon--over");
-   });
+                  progressMove(fileCounter);
+               });
 
-   // When (drop-zoon) has (dragleave) Event
-   dropZoon.addEventListener("dragleave", function (event) {
-      // Remove Class (drop-zoon--over) from (drop-zoon)
-      dropZoon.classList.remove("drop-zoon--over");
-   });
-
-   // When (drop-zoon) has (drop) Event
-   dropZoon.addEventListener("drop", function (event) {
-      // Prevent Default Behavior
-      event.preventDefault();
-
-      // Remove Class (drop-zoon--over) from (drop-zoon)
-      dropZoon.classList.remove("drop-zoon--over");
-
-      // Select The Dropped File
-      const file = event.dataTransfer.files[0];
-
-      // Call Function uploadFile(), And Send To Her The Dropped File :)
-      uploadFile(file);
-   });
-
-   // When (drop-zoon) has (click) Event
-   dropZoon.addEventListener("click", function (event) {
-      // Click The (fileInput)
-      fileInput.click();
-   });
-
-   // When (fileInput) has (change) Event
-   fileInput.addEventListener("change", function (event) {
-      // Select The Chosen File
-      const file = event.target.files[0];
-
-      // Call Function uploadFile(), And Send To Her The Chosen File :)
-      uploadFile(file);
-   });
-
-   // Upload File Function
-   function uploadFile(file) {
-      // FileReader()
-      const fileReader = new FileReader();
-      // File Size
-      const fileSize = file.size;
-
-      // If File Is Passed from the (File Validate) Function
-      if (fileValidate(fileSize)) {
-         // Add Class (drop-zoon--Uploaded) on (drop-zoon)
-         dropZoon.classList.add("drop-zoon--Uploaded");
-
-         // Show Loading-text
-         loadingText.style.display = "block";
-         // Hide Preview Image
-         previewImage.style.display = "none";
-
-         // Remove Class (uploaded-file--open) From (uploadedFile)
-         uploadedFile.classList.remove("uploaded-file--open");
-         // Remove Class (uploaded-file__info--active) from (uploadedFileInfo)
-         uploadedFileInfo.classList.remove("uploaded-file__info--active");
-
-         // After File Reader Loaded
-         fileReader.addEventListener("load", function () {
-            // After Half Second
-            setTimeout(function () {
-               // Add Class (upload-area--open) On (uploadArea)
-               uploadArea.classList.add("upload-area--open");
-
-               // Hide Loading-text (please-wait) Element
-               loadingText.style.display = "none";
-               // Show Preview Image
-               previewImage.style.display = "block";
-
-               // Add Class (file-details--open) On (fileDetails)
-               fileDetails.classList.add("file-details--open");
-               // Add Class (uploaded-file--open) On (uploadedFile)
-               uploadedFile.classList.add("uploaded-file--open");
-               // Add Class (uploaded-file__info--active) On (uploadedFileInfo)
-               uploadedFileInfo.classList.add("uploaded-file__info--active");
-            }, 500); // 0.5s
-
-            // Add The (fileReader) Result Inside (previewImage) Source
-            previewImage.setAttribute("src", fileReader.result);
-
-            // Add File Name Inside Uploaded File Name
-            uploadedFileName.innerHTML = file.name;
-
-            // Call Function progressMove();
-            progressMove();
-         });
-
-         // Read (file) As Data Url
-         fileReader.readAsDataURL(file);
-      } else {
-         // Else
-
-         this; // (this) Represent The fileValidate(fileSize) Function
-      }
-   }
-
-   // Progress Counter Increase Function
-   function progressMove() {
-      // Counter Start
-      let counter = 0;
-
-      // After 600ms
-      setTimeout(() => {
-         // Every 100ms
-         let counterIncrease = setInterval(() => {
-            // If (counter) is equal to 100
-            if (counter === 100) {
-               // Stop (Counter Increase)
-               clearInterval(counterIncrease);
+               fileReader.readAsDataURL(file);
             } else {
-               // Else
-               // plus 10 on counter
-               counter = counter + 10;
-               // add (counter) value inside (uploadedFileCounter)
-               uploadedFileCounter.innerHTML = `${counter}%`;
+               alert("Please ensure your file is 1GB or less");
             }
-         }, 100);
-      }, 600);
+         }
+
+         setTimeout(function () {
+            hideLoadingSpinner(); // Hide loading spinner once processing is done
+         }, 500);
+      }
+
+      function progressMove(fileCounter) {
+         let counter = 0;
+
+         setTimeout(() => {
+            let counterIncrease = setInterval(() => {
+               if (counter === 100) {
+                  clearInterval(counterIncrease);
+               } else {
+                  counter += 10;
+                  fileCounter.innerHTML = `${counter}%`;
+               }
+            }, 100);
+         }, 600);
+      }
+
+      function fileValidate(fileSize) {
+         return fileSize <= 1073741824; // 1GB in bytes
+      }
+   });
+
+   function showLoadingSpinner() {
+      document.getElementById("loadingSpinner").style.display = "flex";
    }
 
-   // Simple File Validate Function
-   function fileValidate(fileSize) {
-      // Check if File Size Is 1GB or Less
-      if (fileSize <= 1073741824) {
-         // 1GB :)
-         return true;
-      } else {
-         // Else File Size
-         alert("Please Your File Should be 1 Gigabyte or Less");
-         return false;
-      }
+   function hideLoadingSpinner() {
+      document.getElementById("loadingSpinner").style.display = "none";
    }
 </script>
+<style>
+   .news-app-promo {
+      box-sizing: border-box;
+      background-color: #000;
+      padding: 0.5em;
+      margin-top: 1em;
+   }
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   .news-app-promo__section {
+      display: inline-block;
+      margin: 0 auto;
+      position: relative;
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+   }
+
+   .news-app-promo-text {
+      color: #fff;
+      font-family: helvetica;
+      min-width: 277px;
+      border-right: 0.25em solid #fff;
+      border-left: 0.25em solid #fff;
+      padding: 0 1em;
+      width: 35%;
+      margin: 1em auto;
+      display: block;
+   }
+
+   .news-app-promo-text__tagline {
+      font-size: 1.09em;
+   }
+
+   .news-app-promo-text__download {
+      font-size: 2.25em;
+      font-weight: 600;
+   }
+
+   .news-app-promo-buttons {
+      margin: 0 auto;
+      max-width: 35%;
+      display: block;
+   }
+
+   .news-app-promo-buttons__buttons {
+      display: block;
+   }
+
+   .news-app-promo-buttons__logo {
+      display: inline-block;
+   }
+
+   .news-app-promo-subsection {
+      display: inline-block;
+      margin: 0 auto;
+      margin-right: 10px;
+   }
+
+   .mimimimi {
+      display: inline-block;
+      width: 136px !important;
+      height: auto !important;
+      margin-bottom: 8px;
+   }
+
+   .news-app-promo__play-store,
+   .news-app-promo__app-store {
+      display: block;
+      width: 161px;
+      height: auto;
+      margin-bottom: 8px;
+   }
+
+   .news-app-promo-subsection--link {
+      text-decoration: none;
+      border: 0;
+   }
+
+   .loading-spinner {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+   }
+
+   .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+      0% {
+         transform: rotate(0deg);
+      }
+      100% {
+         transform: rotate(360deg);
+      }
+   }
+</style>
+<!-- Loading Spinner Overlay -->
+<div class="loading-spinner" id="loadingSpinner">
+   <div class="spinner"></div>
+</div>
 <script>
-   $(document).ready(function () {
-      $(".track-click").on("click", function (e) {
-         e.preventDefault(); // Prevent the default behavior of the link
+   document.addEventListener("DOMContentLoaded", function () {
+      const fileInput = document.getElementById("fileInput");
+      const fileList = document.getElementById("fileList");
 
-         var linkName = $(this).data("link-name");
-         var href = $(this).attr("href");
+      fileInput.addEventListener("change", function (event) {
+         const files = event.target.files;
+         fileList.innerHTML = ""; // Clear existing file names
 
-         // Send an AJAX request to track the click
-         $.ajax({
-            url: '{{ route("track.click") }}',
-            method: "POST",
-            data: {
-               link_name: linkName,
-               _token: "{{ csrf_token() }}",
-            },
-            success: function (response) {
-               console.log(response.message);
-               // Redirect after tracking
-               window.location.href = href;
-            },
-            error: function (xhr) {
-               console.error("An error occurred while tracking the click.");
-               // Proceed with redirect even if tracking fails
-               window.location.href = href;
-            },
+         Array.from(files).forEach((file) => {
+            const li = document.createElement("li");
+            li.textContent = file.name;
+            fileList.appendChild(li);
          });
       });
    });
-</script>
 
+   document.addEventListener("DOMContentLoaded", function () {
+      const sendButton = document.querySelector(".upload-button");
+      const loadingSpinner = document.getElementById("loadingSpinner");
+
+      sendButton.addEventListener("click", function () {
+         loadingSpinner.style.display = "flex"; // Show the spinner
+      });
+   });
+</script>
+@include('adroyid-pop-up')
 @endsection

@@ -16971,7 +16971,7 @@ img {
     .pricing-2-col .pricing-box,
     .pricing-3-col .pricing-box,
     .pricing-4-col .pricing-box,
-    .pricing-5-col .pricing-box {
+    .pricing-5-col .pricing-box {  
         width: 100%;
     }
 
@@ -16983,7 +16983,7 @@ img {
 
     .container {
         /* padding-left: 30px; */
-        padding-right: 30px;
+        /* padding-right: 30px; */
     }
 
     .feature-box-image,
