@@ -27,21 +27,12 @@ class transferInfoController extends Controller
         // // Set size limits
         $maxSize = auth()->check() 
             ? 10 * 1024 * 1024 * 1024 // 10GB for logged-in users
-            : 500 * 1024 * 1024;      // 500MB for guests
+           : 10 * 1024 * 1024 * 1024; // 2GB for guests
 
-        // Check if total size exceeds the limit
-        if ($totalSize > $maxSize) {
-            // Return with error if size exceeds limit
-            $message = auth()->check() 
-                ? 'Your upload exceeds the 10 GB limit.' 
-                : 'Your upload exceeds the 500 MB limit. Please log in to upload up to 10 GB.';
-            
-            return redirect()->back()->withErrors(['upload' => $message]);
-        }
 
         // Proceed with the rest of the upload logic
         $zip = new ZipArchive;
-        $zipFileName = 'uploads_' . uniqid() . '.zip';
+        $zipFileName = $request->zipfilename ?? uniqid() . '.zip';
         $zipFilePath = storage_path('app/public/uploads/' . $zipFileName);
 
         // Create directory if not exists

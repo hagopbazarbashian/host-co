@@ -1,232 +1,5 @@
 @extends('layout.app') @section('main-content')
-<style>
-   .drop-zoon {
-      border: 2px dashed #ccc;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.3s;
-   }
-
-   .drop-zoon--over {
-      border-color: #00f;
-   }
-
-   .drop-zoon--Uploaded {
-      border-color: #0f0;
-   }
-
-   .drop-zoon__icon {
-      font-size: 48px;
-      color: #ccc;
-   }
-
-   .drop-zoon__paragraph {
-      font-size: 16px;
-      color: #333;
-   }
-
-   .drop-zoon__loading-text {
-      display: none;
-      font-size: 16px;
-      color: #f00;
-   }
-
-   .preview-container {
-      display: inline-block;
-      margin: 10px;
-      text-align: center;
-   }
-
-   .drop-zoon__preview-image {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-   }
-
-   .file-name-text {
-      font-size: 14px;
-      color: #333;
-      margin-top: 5px;
-   }
-
-   .uploaded-file {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-   }
-
-   .uploaded-file__icon-container {
-      display: flex;
-      align-items: center;
-   }
-
-   .uploaded-file__icon {
-      font-size: 24px;
-      margin-right: 10px;
-   }
-
-   .uploaded-file__icon-text {
-      font-size: 16px;
-   }
-
-   .uploaded-file__info {
-      display: flex;
-      flex-direction: column;
-   }
-
-   .uploaded-file__name {
-      font-size: 16px;
-   }
-
-   .uploaded-file__counter {
-      font-size: 12px;
-      color: #999;
-   }
-
-   /* Loading spinner styles */
-   .loading-spinner {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.7);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-   }
-
-   .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #3498db;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-   }
-
-   @keyframes spin {
-      0% {
-         transform: rotate(0deg);
-      }
-      100% {
-         transform: rotate(360deg);
-      }
-   }
-   .upload-area {
-      border: 2px dashed #ccc;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.3s;
-      position: relative;
-      background-color: #f9f9f9;
-      margin-top: 20px;
-   }
-
-   .upload-area:hover {
-      background-color: #e9e9e9;
-   }
-
-   .upload-button {
-      padding: 10px 20px; /* Comfortable padding for the button text */
-      background-color: #3498db; /* Your choice of background color */
-      border: none; /* No borders */
-      color: white; /* Text color */
-      cursor: pointer; /* Cursor indicates it's clickable */
-      margin-top: 10px; /* Space above the button */
-      width: 100%; /* Makes the button full width */
-      margin: 0px !important;
-      border-radius: 25px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-around;
-      box-sizing: border-box;
-   }
-
-   .additional-input__field {
-      padding: 10px;
-      margin-top: 10px;
-      width: 100%;
-      box-sizing: border-box;
-      display: block;
-   }
-
-   /* Styling for the list of uploaded files */
-   .uploaded-files {
-      /*list-style-type: none;  // Removes bullets from the list*/
-      padding: 0;
-   }
-   .uploaded-files li {
-      margin-top: 5px; // Adds space between list items
-      font-size: 16px; // Larger text for visibility
-   }
-
-   .uploaded-file {
-      padding: 5px;
-      background-color: #f0f0f0;
-      margin-top: 5px;
-   }
-
-   .file-input-cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      opacity: 0;
-   }
-
-   .file-input-label {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      line-height: 50px;
-      text-align: center;
-      background-color: #f3f3f3;
-      z-index: 0;
-      border: 1px solid #ccc;
-      cursor: pointer;
-   }
-   
-   .download-link {
-   font-size: 16px;
-   line-height: 1.5;
-}
-
-.download-link a {
-   word-wrap: break-word;
-   display: block;
-   margin-top: 5px;
-}
-
-.button-container {
-   display: flex;
-   gap: 10px;
-   margin-top: 10px;
-}
-
-.button-container .btn {
-   flex: 1;
-}
-
-@media (max-width: 600px) {
-   .button-container {
-      flex-direction: column;
-      align-items: stretch;
-   }
-
-   .download-link a {
-      word-wrap: break-word;
-   }
-}
-
-</style>
+<link rel="stylesheet" href="{{ asset('asset/css/welcome-page-system.css') }}">
 
 <!-- Loading Spinner Overlay -->
 <div class="loading-spinner" id="loadingSpinner">
@@ -240,55 +13,65 @@
          <div class="row align-items-center">
             <div class="col-md-6">
                @if(session('link'))
-              <div class="alert alert-success download-link">
-   <p>
-      File uploaded successfully. Share this link to download:
-      <a href="{{ session('link') }}">{{ session('link') }}</a>
-   </p>
+                     <div class="alert alert-success download-link">
+                        <p>
+                           File uploaded successfully. Share this link to download:
+                           <a href="{{ session('link') }}">{{ session('link') }}</a>
+                        </p>
 
-   <!-- Button container for responsive layout -->
-   <div class="button-container">
-      <!-- Copy button -->
-      <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
+                        <!-- QR Code Display with Logo -->
+                        <div class="qr-container" style="margin: 10px 0; text-align: center;">
+                           <!-- Generate QR code with logo in the center -->
+                           {!! QrCode::size(150)
+                                 ->merge('https://transfer.smartdevelop.am/asset/images/IMG_4004.PNG', 0.2, true) // External logo URL
+                                 ->generate(session('link')) !!}
+                        </div>
 
-      <!-- Share button (for browsers with Web Share API support) -->
-      <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
-   </div>
-</div>
+                        <!-- Button container for responsive layout -->
+                        <div class="button-container">
+                           <!-- Copy button -->
+                           <button onclick="copyToClipboard('{{ session('link') }}')" class="btn btn-primary">Copy Link</button>
 
-               <!-- JavaScript for Copy and Share functionality -->
-               <script>
-                  function copyToClipboard(link) {
-                     const tempInput = document.createElement("input");
-                     tempInput.value = link;
-                     document.body.appendChild(tempInput);
-                     tempInput.select();
-                     document.execCommand("copy");
-                     document.body.removeChild(tempInput);
-                     alert("Link copied to clipboard!");
-                  }
+                           <!-- Share button -->
+                           <button onclick="shareLink('{{ session('link') }}')" class="btn btn-success">Share Link</button>
+                        </div>
+                     </div>
 
-                  function shareLink(link) {
-                     if (navigator.share) {
-                        navigator
-                           .share({
-                              title: "File Download Link",
-                              text: "Check out this file:",
-                              url: link,
-                           })
-                           .then(() => {
-                              console.log("Thanks for sharing!");
-                           })
-                           .catch((err) => {
-                              console.error("Error sharing:", err);
-                           });
-                     } else {
-                        alert("Web Share API not supported in this browser.");
-                     }
-                  }
-               </script>
-               @endif 
-               
+                     <!-- JavaScript for Copy and Share functionality -->
+                     <script>
+                        function copyToClipboard(link) {
+                           const tempInput = document.createElement("input");
+                           tempInput.value = link;
+                           document.body.appendChild(tempInput);
+                           tempInput.select();
+                           document.execCommand("copy");
+                           document.body.removeChild(tempInput);
+                           alert("Link copied to clipboard!");
+                        }
+
+                        function shareLink(link) {
+                           if (navigator.share) {
+                              navigator
+                                 .share({
+                                    title: "File Download Link",
+                                    text: "Check out this file:",
+                                    url: link,
+                                 })
+                                 .then(() => {
+                                    console.log("Thanks for sharing!");
+                                 })
+                                 .catch((err) => {
+                                    console.error("Error sharing:", err);
+                                 });
+                           } else {
+                              alert("Web Share API not supported in this browser.");
+                           }
+                        }
+                     </script>
+                  @endif
+                <div class="info-banner">
+                   You can send files or photos up to <strong>10GB</strong> without registration Free!
+                </div>
                <form class="form-container" action="{{ route('start_send') }}" method="POST" enctype="multipart/form-data">
                   @csrf
                   <div class="upload-area">
@@ -302,6 +85,8 @@
                      <ul id="fileList" class="uploaded-files"></ul>
                      <!-- This is where file names will be listed -->
                      <ul id="uploadedFiles" class="uploaded-files"></ul>
+                     <label for="userEmail" class="additional-input__label">Enter Zip File Name:</label>
+                     <input type="text" id="userEmail" name="zipfilename" class="additional-input__field" placeholder="Enter Zip File Name" />
                      <label for="userEmail" class="additional-input__label">Your Email:</label>
                      <input type="email" id="userEmail" name="email" class="additional-input__field" placeholder="Enter your email" />
                      <button type="submit" class="upload-button">Send</button>
@@ -318,6 +103,11 @@
             <div class="col-md-6">
                <img src="{{ asset('asset/images/misc/se.png') }}" class="img-fluid anim-up-down" alt="" />
             </div>
+            {{-- /////////////////////////// --}}
+            {{-- //Store your files or photos Syetem --}}
+            @include('store-system')
+            {{-- /////////////////////////// --}}
+            {{-- //Store your files or photos Syetem --}}
          </div>
       </div>
    </section>
@@ -333,9 +123,6 @@
             <a class="news-app-promo-subsection--link news-app-promo-subsection--playstore" href="{{asset('asset/y1hYiMRmBU8uTChXu8bo.apk')}}" target="_parent">
                <img style="margin-bottom: 0px;!imporatnt" class="news-app-promo__play-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/google_play_store.svg" width="161" height="auto" border="0" />
             </a>
-            <!--<a class="news-app-promo-subsection--link news-app-promo-subsection--appstore" href="https://itunes.apple.com/us/app/bbc-news/id364147881?mt=8" target="_parent">-->
-            <!--    <img class="news-app-promo__app-store" src="//news.files.bbci.co.uk/include/newsspec/19854/assets/app-project-assets/ios_app_store.svg" width="161" height="auto" border="0">-->
-            <!--</a>-->
          </div>
       </div>
       <div class="news-app-promo__section"></div>
@@ -406,7 +193,7 @@
                   uploadedFile.className = "uploaded-file";
 
                   const iconContainer = document.createElement("div");
-                  iconContainer.className = "uploaded-file__icon-container";   
+                  iconContainer.className = "uploaded-file__icon-container";
                   const icon = document.createElement("i");
                   icon.className = "bx bxs-file-blank uploaded-file__icon";
                   const iconText = document.createElement("span");
@@ -611,5 +398,4 @@
       });
    });
 </script>
-@include('adroyid-pop-up')
-@endsection
+@include('adroyid-pop-up') @endsection

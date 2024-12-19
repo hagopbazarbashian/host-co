@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{RegisterController,transferInfoController,LoginController,HomeController,LinkClickController};
-use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController};
+use App\Http\Controllers\User\{HomeControllerr,ShowUserFilesController,SendTextController,StorageSyetem};
 use App\Http\Controllers\Admin\{AdminHomePage,AdminUserControler,AdminFilesController};
 use App\Http\Controllers\transferInfoforuserloginController;
 use App\Http\Controllers\ContactController;
@@ -39,6 +39,20 @@ Route::get('/download/{uniqueLink}', [transferInfoController::class, 'download']
   
 //Recored application downlod   
 Route::post('/track-click', [LinkClickController::class, 'trackClick'])->name('track.click');
+
+//Storage Syetem
+
+Route::post('/file/upload', [StorageSyetem::class, 'upload'])->name('file.upload');
+Route::match(['get', 'post'], '/file/show', [StorageSyetem::class, 'showFiles'])->name('file.show');
+Route::get('/file/download/{id}', [StorageSyetem::class, 'download'])->name('file.download');
+Route::post('/file/delete', [StorageSyetem::class, 'delete'])->name('file.delete');
+Route::post('/file/verifyPassword', [StorageSyetem::class, 'verifyPassword'])->name('file.verifyPassword');
+
+
+
+//Storage Syetem
+
+
 
 Route::middleware(['web:web'])->group(function () {
     
